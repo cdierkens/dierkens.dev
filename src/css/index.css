@@ -3,3 +3,24 @@
 @tailwind components;
 
 @tailwind utilities;
+
+body {
+  @apply font-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  @apply font-mono;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+nav,
+button {
+  @apply font-sans;
+}
