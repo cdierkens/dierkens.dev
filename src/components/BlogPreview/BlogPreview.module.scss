@@ -1,0 +1,16 @@
+.BlogPreview {
+  @apply w-full;
+
+  @screen lg {
+    @apply flex;
+  }
+}
+
+.Image {
+  @apply h-48 flex-none bg-cover rounded-t text-center overflow-hidden;
+  background-image: url("https://tailwindcss.com/img/card-left.jpg");
+
+  @screen lg {
+    @apply h-auto w-48 rounded-t-none rounded-l;
+  }
+}

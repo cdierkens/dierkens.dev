@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { BlogPreview, Layout } from "../components";
 
 const Index: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+
   return (
-    <main>
+    <Layout>
       <div>
         <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
           <div className="flex items-center flex-shrink-0 text-white mr-6">
@@ -70,35 +72,10 @@ const Index: React.FC = () => {
           </div>
         </nav>
       </div>
-      <div className="container max-w-md mx-auto mt-10">
-        <div className="rounded overflow-hidden shadow-lg">
-          <img
-            className="w-full"
-            src="https://tailwindcss.com/img/card-top.jpg"
-            alt="Sunset in the mountains"
-          />
-          <div className="px-6 py-4">
-            <div className="font-bold text-xl mb-2">The Coldest Sunset</div>
-            <p className="text-gray-700 text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Voluptatibus quia, nulla! Maiores et perferendis eaque,
-              exercitationem praesentium nihil.
-            </p>
-          </div>
-          <div className="px-6 py-4">
-            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-              #photography
-            </span>
-            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-              #travel
-            </span>
-            <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-              #winter
-            </span>
-          </div>
-        </div>
+      <div className="container max-w-lg mx-auto mt-10">
+        <BlogPreview />
       </div>
-    </main>
+    </Layout>
   );
 };
 
