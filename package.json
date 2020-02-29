@@ -10,7 +10,8 @@
     "lint": "eslint src --ext ts,tsx",
     "build": "gatsby build",
     "serve": "gatsby serve",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
+    "generate": "plop"
   },
   "dependencies": {
     "@hot-loader/react-dom": "16.12.0",
@@ -21,11 +22,11 @@
     "eslint": "6.8.0",
     "eslint-config-react-app": "5.2.0",
     "eslint-loader": "3.0.3",
-    "eslint-plugin-flowtype": "4.6.0",
+    "eslint-plugin-flowtype": "3.13.0",
     "eslint-plugin-import": "2.20.1",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.18.3",
-    "eslint-plugin-react-hooks": "2.5.0",
+    "eslint-plugin-react-hooks": "1.7.0",
     "gatsby": "2.19.23",
     "gatsby-image": "2.2.41",
     "gatsby-plugin-eslint": "2.0.8",
@@ -41,9 +42,10 @@
     "typescript": "3.8.2"
   },
   "devDependencies": {
-    "eslint-config-react-app": "5.2.0",
     "husky": "4.2.3",
+    "inquirer-fuzzy-path": "2.2.0",
     "lint-staged": "10.0.8",
+    "plop": "^2.5.4",
     "prettier": "1.19.1"
   },
   "keywords": [
