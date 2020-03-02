@@ -10,8 +10,7 @@
     "lint": "eslint src --ext ts,tsx",
     "build": "gatsby build",
     "serve": "gatsby serve",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
-    "generate": "plop"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "dependencies": {
     "@hot-loader/react-dom": "16.12.0",

@@ -38,9 +38,9 @@ or
 
 `npx plop <generator>`
 
-#### `plop list`
+#### `plop`
 
-List the available generators.
+Pick a generator and run it.
 
 #### `plop component`
 
