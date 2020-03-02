@@ -1,16 +1,15 @@
 .BlogPreview {
-  @apply w-full;
+  @apply border border-gray-400 bg-white rounded flex flex-col justify-between leading-normal p-4 my-4 w-full;
 
   @screen lg {
     @apply flex;
   }
 }
 
-.Image {
-  @apply h-48 flex-none bg-cover rounded-t text-center overflow-hidden;
-  background-image: url("https://tailwindcss.com/img/card-left.jpg");
+.Title {
+  @apply text-gray-900 font-bold text-xl mb-2;
+}
 
-  @screen lg {
-    @apply h-auto w-48 rounded-t-none rounded-l;
-  }
+.Description {
+  @apply text-gray-700 text-base;
 }

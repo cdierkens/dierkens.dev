@@ -1,0 +1,55 @@
+.NavBar {
+  @apply flex justify-between flex-wrap bg-teal-500 p-6;
+}
+
+.Logo {
+  @apply flex items-center flex-shrink-0 text-white mr-6;
+}
+
+.LogoText {
+  @apply font-semibold text-xl tracking-tight;
+}
+
+.Links {
+  @apply w-full flex-grow;
+
+  @screen lg {
+    @apply block flex items-center w-auto;
+  }
+}
+
+.LinksWrapper {
+  @apply flex-grow  flex flex-col;
+
+  @screen lg {
+    @apply justify-end flex-row;
+  }
+}
+
+.Link {
+  @apply text-teal-200 py-2 px-3;
+
+  &:hover {
+    @apply text-white;
+  }
+}
+
+.ButtonWrapper {
+  @apply block;
+
+  @screen lg {
+    @apply hidden;
+  }
+
+  button {
+    @apply flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400;
+
+    &:hover {
+      @apply text-white border-white;
+    }
+  }
+
+  svg {
+    @apply fill-current h-3 w-3;
+  }
+}
