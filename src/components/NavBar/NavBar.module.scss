@@ -1,9 +1,9 @@
 .NavBar {
-  @apply flex justify-between flex-wrap bg-teal-500 p-6;
+  @apply flex justify-between flex-wrap bg-teal-500 px-6 py-2;
 }
 
 .Logo {
-  @apply flex items-center flex-shrink-0 text-white mr-6;
+  @apply flex items-center;
 }
 
 .LogoText {
@@ -35,7 +35,7 @@
 }
 
 .ButtonWrapper {
-  @apply block;
+  @apply flex items-center;
 
   @screen lg {
     @apply hidden;

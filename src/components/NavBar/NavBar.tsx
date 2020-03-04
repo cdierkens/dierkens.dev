@@ -1,33 +1,41 @@
-import React, { PropsWithChildren, useState } from "react";
+import { Link } from "gatsby";
+import React, { useState } from "react";
 import useMatchMedia from "../../hooks/useMatchMedia";
 import styles from "./NavBar.module.scss";
-
-interface NavBarLinkProps {
-  href: string;
-}
-
-const NavBarLink: React.FC<PropsWithChildren<NavBarLinkProps>> = ({
-  href,
-  children
-}) => (
-  <a href={href} className={styles.Link}>
-    {children}
-  </a>
-);
 
 const NavBarLinks: React.FC = () => (
   <div className={styles.Links}>
     <div className={styles.LinksWrapper}>
-      <NavBarLink href="/about">About</NavBarLink>
-      <NavBarLink href="/blog">Blog</NavBarLink>
-      <NavBarLink href="/uses">Uses</NavBarLink>
+      <Link
+        className={styles.Link}
+        activeClassName={styles.ActiveLink}
+        to="about"
+      >
+        About
+      </Link>
+      <Link
+        className={styles.Link}
+        activeClassName={styles.ActiveLink}
+        to="blog"
+      >
+        Blog
+      </Link>
+      <Link
+        className={styles.Link}
+        activeClassName={styles.ActiveLink}
+        to="uses"
+      >
+        Uses
+      </Link>
     </div>
   </div>
 );
 
 const Logo: React.FC = () => (
   <div className={styles.Logo}>
-    <span className="logo-text">Christopher Dierkens</span>
+    <Link className={styles.Link} activeClassName={styles.ActiveLink} to="">
+      Christopher Dierkens
+    </Link>
   </div>
 );
 

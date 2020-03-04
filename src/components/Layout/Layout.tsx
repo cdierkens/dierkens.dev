@@ -5,7 +5,7 @@ import "./Layout.scss";
 
 const Layout: React.FC = ({ children }) => (
   <>
-    <header>
+    <header className="mb-4">
       <NavBar />
     </header>
     <main>

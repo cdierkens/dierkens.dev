@@ -3,6 +3,7 @@
 module.exports = {
   siteMetadata: {},
   plugins: [
+    "gatsby-plugin-typescript",
     {
       resolve: "gatsby-plugin-sass",
       options: {
@@ -17,7 +18,6 @@ module.exports = {
         tailwind: true
       }
     },
-    "gatsby-plugin-typescript",
     {
       resolve: "gatsby-plugin-eslint",
       options: {
@@ -28,6 +28,14 @@ module.exports = {
           emitWarning: true,
           failOnWarning: true
         }
+      }
+    },
+    "gatsby-plugin-mdx",
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name: "posts",
+        path: `${__dirname}/src/posts/`
       }
     },
     "gatsby-plugin-offline"
