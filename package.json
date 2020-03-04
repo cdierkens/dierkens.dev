@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "author": "Christopher Dierkens <cjdierkens@gmail.com.com>",
   "scripts": {
-    "start": "gatsby develop --open",
+    "start": "gatsby develop",
     "check": "tsc --noEmit",
     "lint": "eslint src --ext ts,tsx",
     "build": "gatsby build",

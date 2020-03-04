@@ -36,7 +36,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     reporter.panicOnBuild('🚨  ERROR: Loading "createPages" query');
   }
 
-  result.data.allMdx.edges.forEach(({ node }, index) => {
+  result.data.allMdx.edges.forEach(({ node }) => {
     createPage({
       // or `node.frontmatter.slug`
       path: node.fields.slug,
@@ -47,6 +47,25 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       context: { id: node.id }
     });
   });
+};
+
+const replacePath = path =>
+  path === `/` ? path : path.replace(/\/$/, ``).toLowerCase();
+
+exports.onCreatePage = ({ page, actions }) => {
+  const { createPage, deletePage } = actions;
+
+  const path = replacePath(page.path);
+
+  if (page.path !== path) {
+    deletePage(page);
+    createPage({
+      ...page,
+      ...{
+        path
+      }
+    });
+  }
 };
 
 exports.onCreateWebpackConfig = ({ stage, actions }) => {
