@@ -9,21 +9,21 @@ const NavBarLinks: React.FC = () => (
       <Link
         className={styles.Link}
         activeClassName={styles.ActiveLink}
-        to="about"
+        to="/about"
       >
         About
       </Link>
       <Link
         className={styles.Link}
         activeClassName={styles.ActiveLink}
-        to="blog"
+        to="/blog"
       >
         Blog
       </Link>
       <Link
         className={styles.Link}
         activeClassName={styles.ActiveLink}
-        to="uses"
+        to="/uses"
       >
         Uses
       </Link>

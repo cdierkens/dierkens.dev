@@ -53,11 +53,18 @@ const replacePath = path =>
   path === `/` ? path : path.replace(/\/$/, ``).toLowerCase();
 
 exports.onCreatePage = ({ page, actions }) => {
-  const { createPage, deletePage } = actions;
+  const { createPage, deletePage, createRedirect } = actions;
 
   const path = replacePath(page.path);
 
   if (page.path !== path) {
+    createRedirect({
+      fromPath: page.path,
+      toPath: path,
+      isPermanent: true,
+      redirectInBrowser: true
+    });
+
     deletePage(page);
     createPage({
       ...page,

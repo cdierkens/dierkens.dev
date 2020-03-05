@@ -16,11 +16,9 @@ const BlogPreview: React.FC<BlogPreviewProps> = ({
   date,
   avatar
 }) => (
-  <div className={styles.BlogPreview}>
-    <div className="mb-8">
-      <div className={styles.Title}>{title}</div>
-      <p className={styles.Description}>{description}</p>
-    </div>
+  <section className={styles.BlogPreview}>
+    <h2 className={styles.Title}>{title}</h2>
+    <p className={styles.Description}>{description}</p>
     <div className="flex items-center">
       <img
         className="w-10 h-10 rounded-full mr-4"
@@ -28,11 +26,11 @@ const BlogPreview: React.FC<BlogPreviewProps> = ({
         alt={`Avatar of ${author}`}
       />
       <div className="text-sm">
-        <p className="text-gray-900">{author}</p>
-        <p className="text-gray-600">{date}</p>
+        <p className="text-gray-900 my-1">{author}</p>
+        <p className="text-gray-600 my-1">{date}</p>
       </div>
     </div>
-  </div>
+  </section>
 );
 
 export default BlogPreview;

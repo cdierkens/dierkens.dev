@@ -30,7 +30,34 @@ module.exports = {
         }
       }
     },
-    "gatsby-plugin-mdx",
+    {
+      resolve: "gatsby-plugin-prefetch-google-fonts",
+      options: {
+        fonts: [
+          {
+            family: "Roboto Mono"
+          },
+          {
+            family: "Source Sans Pro",
+            variants: ["400", "400i", "600", "600i", "700", "700i"]
+          },
+          {
+            family: "Roboto Slab",
+            variants: ["400", "400i", "600", "600i", "700", "700i"]
+          }
+        ]
+      }
+    },
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-prismjs`
+          }
+        ]
+      }
+    },
     {
       resolve: "gatsby-source-filesystem",
       options: {
