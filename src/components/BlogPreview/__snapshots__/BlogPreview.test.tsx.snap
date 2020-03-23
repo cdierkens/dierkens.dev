@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <section
+    class="BlogPreview"
+  >
+    <h2
+      class="Title"
+    >
+      Does drinking coffee make you a better developer?
+    </h2>
+    <p
+      class="Description"
+    >
+      Alcatra venison sirloin, dolore magna cupidatat boudin nostrud. Eiusmod ut prosciutto, fatback ipsum leberkas bresaola beef ribs. Porchetta exercitation pastrami kevin frankfurter aliqua. Burgdoggen minim rump dolore swine, shoulder velit ball tip drumstick aute eiusmod adipisicing pancetta strip steak non. Kielbasa tri-tip id beef ribs chuck chicken.
+    </p>
+    <div
+      class="flex items-center"
+    >
+      <img
+        alt="Avatar of Christopher Dierkens"
+        class="w-10 h-10 rounded-full mr-4"
+        src="/images/avatar-dierkens-chris.jpg"
+      />
+      <div
+        class="text-sm"
+      >
+        <p
+          class="text-gray-900 my-1"
+        >
+          Christopher Dierkens
+        </p>
+        <p
+          class="text-gray-600 my-1"
+        >
+          Sunday, March 1, 2020
+        </p>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;
