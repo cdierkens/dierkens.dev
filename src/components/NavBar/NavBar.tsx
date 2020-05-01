@@ -1,5 +1,5 @@
 import { Link } from "gatsby";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import useMatchMedia from "../../hooks/useMatchMedia";
 import styles from "./NavBar.module.scss";
 
@@ -57,12 +57,14 @@ const MenuButton: React.FC<MenuButtonProps> = ({ onClick }) => (
 const NavBar: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
-  useMatchMedia("(min-width: 1024px)", () => setMenuOpen(true));
+  const handler = useCallback(() => setMenuOpen(true), []);
+
+  useMatchMedia("(min-width: 1024px)", handler);
 
   return (
     <nav className={styles.NavBar}>
       <Logo />
-      <MenuButton onClick={() => setMenuOpen(isMenuOpen => !isMenuOpen)} />
+      <MenuButton onClick={() => setMenuOpen((isMenuOpen) => !isMenuOpen)} />
       {isMenuOpen && <NavBarLinks />}
     </nav>
   );
