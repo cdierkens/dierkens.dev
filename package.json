@@ -11,7 +11,7 @@
     "build": "gatsby build",
     "serve": "gatsby serve",
     "test": "jest --watch",
-    "test:ci": "jest --coverage"
+    "test:ci": "jest"
   },
   "dependencies": {
     "@hot-loader/react-dom": "16.13.0",
