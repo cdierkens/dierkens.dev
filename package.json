@@ -59,7 +59,7 @@
     "concurrently": "5.2.0",
     "husky": "4.2.5",
     "identity-obj-proxy": "3.0.0",
-    "inquirer-fuzzy-path": "2.2.0",
+    "inquirer-fuzzy-path": "2.3.0",
     "jest": "25.5.4",
     "lint-staged": "10.2.2",
     "plop": "2.6.0",
