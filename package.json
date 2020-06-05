@@ -48,7 +48,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "tailwindcss": "1.4.6",
-    "typescript": "3.9.3"
+    "typescript": "3.9.5"
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.10.1",
