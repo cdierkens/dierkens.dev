@@ -64,7 +64,7 @@
     "lint-staged": "10.2.8",
     "plop": "2.7.1",
     "prettier": "2.0.5",
-    "stylelint": "13.5.0",
+    "stylelint": "13.6.0",
     "stylelint-config-recommended": "3.0.0"
   },
   "keywords": [
