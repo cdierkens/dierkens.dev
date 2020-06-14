@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.10.1",
-    "@testing-library/jest-dom": "5.10.0",
+    "@testing-library/jest-dom": "5.10.1",
     "@testing-library/react": "10.2.1",
     "babel-jest": "26.0.1",
     "babel-preset-gatsby": "0.4.7",
