@@ -7,17 +7,10 @@ module.exports = {
     {
       resolve: "gatsby-plugin-sass",
       options: {
-        postCssPlugins: [require("tailwindcss")]
-      }
+        postCssPlugins: [require("tailwindcss")],
+      },
     },
     "gatsby-plugin-postcss",
-    {
-      resolve: "gatsby-plugin-purgecss",
-      options: {
-        printRejected: true,
-        tailwind: true
-      }
-    },
     {
       resolve: "gatsby-plugin-eslint",
       options: {
@@ -26,45 +19,45 @@ module.exports = {
         stages: ["develop", "build-javascript"],
         options: {
           emitWarning: true,
-          failOnWarning: true
-        }
-      }
+          failOnWarning: true,
+        },
+      },
     },
     {
       resolve: "gatsby-plugin-prefetch-google-fonts",
       options: {
         fonts: [
           {
-            family: "Roboto Mono"
+            family: "Roboto Mono",
           },
           {
             family: "Source Sans Pro",
-            variants: ["400", "400i", "600", "600i", "700", "700i"]
+            variants: ["400", "400i", "600", "600i", "700", "700i"],
           },
           {
             family: "Roboto Slab",
-            variants: ["400", "400i", "600", "600i", "700", "700i"]
-          }
-        ]
-      }
+            variants: ["400", "400i", "600", "600i", "700", "700i"],
+          },
+        ],
+      },
     },
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
         gatsbyRemarkPlugins: [
           {
-            resolve: `gatsby-remark-prismjs`
-          }
-        ]
-      }
+            resolve: `gatsby-remark-prismjs`,
+          },
+        ],
+      },
     },
     {
       resolve: "gatsby-source-filesystem",
       options: {
         name: "posts",
-        path: `${__dirname}/src/posts/`
-      }
+        path: `${__dirname}/src/posts/`,
+      },
     },
-    "gatsby-plugin-offline"
-  ]
+    "gatsby-plugin-offline",
+  ],
 };

@@ -11,7 +11,8 @@
     "build": "gatsby build",
     "serve": "gatsby serve",
     "test": "jest --watch",
-    "test:ci": "jest"
+    "test:ci": "jest",
+    "deploy": "aws s3 cp public s3://dierkens.dev --recursive"
   },
   "dependencies": {
     "@hot-loader/react-dom": "16.13.0",
@@ -37,7 +38,6 @@
     "gatsby-plugin-offline": "3.2.27",
     "gatsby-plugin-postcss": "2.3.11",
     "gatsby-plugin-prefetch-google-fonts": "1.4.3",
-    "gatsby-plugin-purgecss": "5.0.0",
     "gatsby-plugin-sass": "2.3.12",
     "gatsby-plugin-typescript": "2.4.18",
     "gatsby-remark-prismjs": "3.5.11",

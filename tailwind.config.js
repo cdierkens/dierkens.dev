@@ -1,15 +1,19 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
+  future: {
+    purgeLayersByDefault: true,
+  },
+  purge: ["./src/**/*.tsx"],
   theme: {
     extend: {
       fontFamily: {
         sans: ["Source Sans Pro", ...defaultTheme.fontFamily.sans],
         serif: ["Roboto Slab", ...defaultTheme.fontFamily.serif],
-        mono: ["Roboto Mono", ...defaultTheme.fontFamily.mono]
-      }
-    }
+        mono: ["Roboto Mono", ...defaultTheme.fontFamily.mono],
+      },
+    },
   },
   variants: {},
-  plugins: []
+  plugins: [],
 };
