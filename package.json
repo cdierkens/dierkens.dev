@@ -18,7 +18,7 @@
     "@hot-loader/react-dom": "16.13.0",
     "@mdx-js/mdx": "1.6.18",
     "@mdx-js/react": "1.6.18",
-    "@types/mdx-js__react": "1.5.2",
+    "@types/mdx-js__react": "1.5.3",
     "@types/react": "16.9.49",
     "@types/react-dom": "16.9.8",
     "autoprefixer": "9.8.6",
