@@ -15,7 +15,7 @@
     "deploy": "aws s3 cp public s3://dierkens.dev --recursive"
   },
   "dependencies": {
-    "@hot-loader/react-dom": "16.13.0",
+    "@hot-loader/react-dom": "16.14.0",
     "@mdx-js/mdx": "1.6.18",
     "@mdx-js/react": "1.6.18",
     "@types/mdx-js__react": "1.5.3",
