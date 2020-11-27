@@ -1,0 +1,73 @@
+@import 'prismjs/themes/prism.css';
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+html {
+  font-size: 16px;
+}
+
+body {
+  @apply font-serif text-base leading-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+.gatsby-highlight {
+  @apply font-mono;
+}
+
+:not(pre) code.language-text {
+  @apply p-1;
+}
+
+pre {
+  @apply px-5 py-4 bg-gray-100 leading-tight rounded;
+}
+
+nav,
+button {
+  @apply font-sans;
+}
+
+a,
+button.link {
+  @apply border-b border-transparent text-yellow-700;
+
+  @apply hover:border-yellow-700;
+}
+
+input {
+  @apply appearance-none block bg-gray-200 text-gray-700 border border-yellow-700 rounded py-3 px-4 mb-3 leading-tight;
+
+  @apply focus:outline-none focus:bg-white;
+}
+
+button:not(.link),
+input[type='submit'],
+input[type='button'] {
+  @apply bg-yellow-500 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 rounded cursor-pointer;
+
+  @apply hover:bg-yellow-400 hover:border-yellow-500;
+}
+
+.prose table {
+  @apply border-collapse font-sans table-fixed w-full;
+}
+
+.prose table th,
+.prose table td {
+  @apply border px-4 py-2 !important;
+}
+
+.prose table tr:nth-child(even) {
+  @apply bg-gray-100;
+}
+
+.prose a {
+  @apply text-yellow-700 hover:text-yellow-800 border-0 !important;
+}

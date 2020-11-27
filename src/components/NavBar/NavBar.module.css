@@ -1,0 +1,45 @@
+.NavBar {
+  @apply flex justify-between flex-wrap bg-yellow-700 px-6 py-2;
+}
+
+.Logo {
+  @apply flex items-center;
+}
+
+.LogoText {
+  @apply font-semibold text-xl tracking-tight;
+}
+
+.Links {
+  @apply w-full flex-grow;
+
+  @apply lg:items-center lg:w-auto;
+}
+
+.LinksWrapper {
+  @apply flex-grow flex flex-col;
+
+  @apply lg:justify-end lg:flex-row;
+}
+
+.Link {
+  @apply text-white py-2 px-3 border-b border-transparent font-semibold;
+
+  @apply hover:text-white hover:border-white;
+}
+
+.ButtonWrapper {
+  @apply flex items-center;
+
+  @apply lg:hidden;
+}
+
+.ButtonWrapper button {
+  @apply flex items-center px-3 py-2 border rounded text-blue-200 border-blue-400;
+
+  @apply hover:text-white hover:border-white;
+}
+
+.ButtonWrapper svg {
+  @apply fill-current h-3 w-3;
+}

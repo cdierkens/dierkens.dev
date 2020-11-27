@@ -1,7 +1,7 @@
 import { Link } from "gatsby";
 import React, { useCallback, useState } from "react";
 import useMatchMedia from "../../hooks/useMatchMedia";
-import styles from "./NavBar.module.scss";
+import styles from "./NavBar.module.css";
 
 const NavBarLinks: React.FC = () => (
   <div className={styles.Links}>

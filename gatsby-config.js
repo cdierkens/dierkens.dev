@@ -4,12 +4,6 @@ module.exports = {
   siteMetadata: {},
   plugins: [
     "gatsby-plugin-typescript",
-    {
-      resolve: "gatsby-plugin-sass",
-      options: {
-        postCssPlugins: [require("tailwindcss")],
-      },
-    },
     "gatsby-plugin-postcss",
     {
       resolve: "gatsby-plugin-eslint",
