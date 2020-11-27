@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "../Container";
 import NavBar from "../NavBar";
-import "./Layout.scss";
+import "./Layout.css";
 
 const Layout: React.FC = ({ children }) => (
   <>

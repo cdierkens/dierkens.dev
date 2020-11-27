@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./BlogPreview.module.scss";
+import styles from "./BlogPreview.module.css";
 
 interface BlogPreviewProps {
   author: string;
@@ -14,7 +14,7 @@ const BlogPreview: React.FC<BlogPreviewProps> = ({
   description,
   author,
   date,
-  avatar
+  avatar,
 }) => (
   <section className={styles.BlogPreview}>
     <h2 className={styles.Title}>{title}</h2>

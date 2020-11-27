@@ -33,10 +33,10 @@ pre {
 
 blockquote {
   @apply border-l-4 border-gray-400 py-1 px-2 my-4 text-gray-700 text-sm;
+}
 
-  p {
-    @apply m-0;
-  }
+blockquote p {
+  @apply m-0;
 }
 
 ul {
@@ -50,15 +50,18 @@ ol {
 ol,
 ul {
   @apply list-outside my-3 pl-4 ml-4 font-sans;
+}
 
-  p {
-    @apply font-serif;
-  }
+ol p,
+ul p {
+  @apply font-serif;
+}
 
-  ol,
-  ul {
-    @apply ml-0;
-  }
+ol ol,
+ol ul,
+ul ol,
+ul ul {
+  @apply ml-0;
 }
 
 h1,
@@ -75,41 +78,35 @@ button {
 input {
   @apply appearance-none block bg-gray-200 text-gray-700 border border-blue-700 rounded py-3 px-4 mb-3 leading-tight;
 
-  &:focus {
-    @apply outline-none bg-white;
-  }
+  @apply focus:outline-none focus:bg-white;
 }
 
 a,
 button.link {
   @apply border-b border-transparent text-blue-700;
 
-  &:hover {
-    @apply border-b border-blue-700;
-  }
+  @apply hover:border-blue-700;
 }
 
 table {
   @apply border-collapse font-sans table-fixed w-full;
+}
 
-  th,
-  td {
-    @apply border px-4 py-2;
-  }
+table th,
+table td {
+  @apply border px-4 py-2;
+}
 
-  tr:nth-child(even) {
-    @apply bg-gray-100;
-  }
+table tr:nth-child(even) {
+  @apply bg-gray-100;
 }
 
 button:not(.link),
-input[type="submit"],
-input[type="button"] {
+input[type='submit'],
+input[type='button'] {
   @apply bg-blue-500 text-white font-bold py-2 px-4 border-b-4 border-blue-700 rounded cursor-pointer;
 
-  &:hover {
-    @apply bg-blue-400 border-blue-500;
-  }
+  @apply hover:bg-blue-400 hover:border-blue-500;
 }
 
 h1,
@@ -151,10 +148,10 @@ img {
 
 dl {
   @apply font-bold font-sans;
+}
 
-  dd {
-    @apply pl-4 font-normal;
-  }
+dl dd {
+  @apply pl-4 font-normal;
 }
 
 .footnotes {

@@ -13,43 +13,33 @@
 .Links {
   @apply w-full flex-grow;
 
-  @screen lg {
-    @apply items-center w-auto;
-  }
+  @apply lg:items-center lg:w-auto;
 }
 
 .LinksWrapper {
   @apply flex-grow flex flex-col;
 
-  @screen lg {
-    @apply justify-end flex-row;
-  }
+  @apply lg:justify-end lg:flex-row;
 }
 
 .Link {
   @apply text-gray-300 py-2 px-3 border-b border-transparent font-semibold;
 
-  &:hover {
-    @apply text-white border-white;
-  }
+  @apply hover:text-white hover:border-white;
 }
 
 .ButtonWrapper {
   @apply flex items-center;
 
-  @screen lg {
-    @apply hidden;
-  }
+  @apply lg:hidden;
+}
 
-  button {
-    @apply flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400;
+.ButtonWrapper button {
+  @apply flex items-center px-3 py-2 border rounded text-blue-200 border-blue-400;
 
-    &:hover {
-      @apply text-white border-white;
-    }
-  }
+  @apply hover:text-white hover:border-white;
+}
 
-  svg {
-    @apply fill-current h-3 w-3;
-  }
+.ButtonWrapper svg {
+  @apply fill-current h-3 w-3;
 }

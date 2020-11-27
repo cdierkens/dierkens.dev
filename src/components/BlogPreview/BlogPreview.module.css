@@ -1,9 +1,7 @@
 .BlogPreview {
   @apply border border-gray-400 bg-white rounded flex flex-col justify-between p-4 my-4 w-full;
 
-  @screen lg {
-    @apply flex;
-  }
+  @apply lg:flex;
 }
 
 .Title {
