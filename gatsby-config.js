@@ -24,21 +24,23 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-plugin-prefetch-google-fonts",
+      resolve: "gatsby-plugin-webfonts",
       options: {
-        fonts: [
-          {
-            family: "Roboto Mono",
-          },
-          {
-            family: "Source Sans Pro",
-            variants: ["400", "400i", "600", "600i", "700", "700i"],
-          },
-          {
-            family: "Roboto Slab",
-            variants: ["400", "400i", "600", "600i", "700", "700i"],
-          },
-        ],
+        fonts: {
+          google: [
+            {
+              family: "Roboto Mono",
+            },
+            {
+              family: "Source Sans Pro",
+              variants: ["400", "400i", "600", "600i", "700", "700i"],
+            },
+            {
+              family: "Roboto Slab",
+              variants: ["400", "400i", "600", "600i", "700", "700i"],
+            },
+          ],
+        },
       },
     },
     {
