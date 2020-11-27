@@ -37,10 +37,10 @@ exports[`matches snapshot 1`] = `
       </div>
     </nav>
   </header>
-  <main>
-    <div
-      class="container max-w-xl mx-auto px-2 my-6"
-    />
+  <main
+    class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto"
+  >
+    <div />
   </main>
   <footer />
 </DocumentFragment>
