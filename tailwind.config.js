@@ -9,8 +9,23 @@ module.exports = {
         serif: ["Roboto Slab", ...defaultTheme.fontFamily.serif],
         mono: ["Roboto Mono", ...defaultTheme.fontFamily.mono],
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            pre: false,
+            code: false,
+            "pre code": false,
+            "code::before": false,
+            "code::after": false,
+          },
+        },
+      },
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/typography")({
+      modifiers: ["sm", "lg"],
+    }),
+  ],
 };

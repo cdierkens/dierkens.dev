@@ -1,3 +1,5 @@
+@import 'prismjs/themes/prism.css';
+
 @tailwind base;
 
 @tailwind components;
@@ -5,7 +7,7 @@
 @tailwind utilities;
 
 html {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 body {
@@ -14,146 +16,58 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-p {
-  @apply my-3;
-}
-
 code,
 .gatsby-highlight {
-  @apply font-mono text-xs;
+  @apply font-mono;
 }
 
 :not(pre) code.language-text {
-  @apply text-xs p-1;
+  @apply p-1;
 }
 
 pre {
   @apply px-5 py-4 bg-gray-100 leading-tight rounded;
 }
 
-blockquote {
-  @apply border-l-4 border-gray-400 py-1 px-2 my-4 text-gray-700 text-sm;
-}
-
-blockquote p {
-  @apply m-0;
-}
-
-ul {
-  @apply list-disc;
-}
-
-ol {
-  @apply list-decimal;
-}
-
-ol,
-ul {
-  @apply list-outside my-3 pl-4 ml-4 font-sans;
-}
-
-ol p,
-ul p {
-  @apply font-serif;
-}
-
-ol ol,
-ol ul,
-ul ol,
-ul ul {
-  @apply ml-0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
 nav,
 button {
   @apply font-sans;
 }
 
-input {
-  @apply appearance-none block bg-gray-200 text-gray-700 border border-blue-700 rounded py-3 px-4 mb-3 leading-tight;
-
-  @apply focus:outline-none focus:bg-white;
-}
-
 a,
 button.link {
-  @apply border-b border-transparent text-blue-700;
+  @apply border-b border-transparent text-yellow-700;
 
-  @apply hover:border-blue-700;
+  @apply hover:border-yellow-700;
 }
 
-table {
-  @apply border-collapse font-sans table-fixed w-full;
-}
+input {
+  @apply appearance-none block bg-gray-200 text-gray-700 border border-yellow-700 rounded py-3 px-4 mb-3 leading-tight;
 
-table th,
-table td {
-  @apply border px-4 py-2;
-}
-
-table tr:nth-child(even) {
-  @apply bg-gray-100;
+  @apply focus:outline-none focus:bg-white;
 }
 
 button:not(.link),
 input[type='submit'],
 input[type='button'] {
-  @apply bg-blue-500 text-white font-bold py-2 px-4 border-b-4 border-blue-700 rounded cursor-pointer;
+  @apply bg-yellow-500 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 rounded cursor-pointer;
 
-  @apply hover:bg-blue-400 hover:border-blue-500;
+  @apply hover:bg-yellow-400 hover:border-yellow-500;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  @apply font-bold mt-8 leading-none;
+.prose table {
+  @apply border-collapse font-sans table-fixed w-full;
 }
 
-h1 {
-  @apply text-4xl;
+.prose table th,
+.prose table td {
+  @apply border px-4 py-2 !important;
 }
 
-h2 {
-  @apply text-3xl;
+.prose table tr:nth-child(even) {
+  @apply bg-gray-100;
 }
 
-h3 {
-  @apply text-2xl;
-}
-
-h4 {
-  @apply text-xl;
-}
-
-h5 {
-  @apply text-lg;
-}
-
-h6 {
-  @apply text-base;
-}
-
-img {
-  @apply inline;
-}
-
-dl {
-  @apply font-bold font-sans;
-}
-
-dl dd {
-  @apply pl-4 font-normal;
-}
-
-.footnotes {
-  @apply my-6;
+.prose a {
+  @apply text-yellow-700 hover:text-yellow-800 border-0 !important;
 }

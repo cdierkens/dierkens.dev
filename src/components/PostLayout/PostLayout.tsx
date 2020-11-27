@@ -25,18 +25,20 @@ interface PageContext {
 
 const PostLayout: React.FC<PageProps<MDX, PageContext>> = ({
   data: { mdx },
-  pageContext
+  pageContext,
 }) => {
   pageContext.frontmatter = mdx.frontmatter;
 
   return (
     <Layout>
-      <h1>
-        {mdx.frontmatter.title} - {mdx.frontmatter.author}
-      </h1>
-      <MDXProvider components={shortcodes}>
-        <MDXRenderer pageContext={pageContext}>{mdx.body}</MDXRenderer>
-      </MDXProvider>
+      <article>
+        <h1>
+          {mdx.frontmatter.title} - {mdx.frontmatter.author}
+        </h1>
+        <MDXProvider components={shortcodes}>
+          <MDXRenderer pageContext={pageContext}>{mdx.body}</MDXRenderer>
+        </MDXProvider>
+      </article>
     </Layout>
   );
 };
