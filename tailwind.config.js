@@ -23,9 +23,5 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [
-    require("@tailwindcss/typography")({
-      modifiers: ["sm", "lg"],
-    }),
-  ],
+  plugins: [require("@tailwindcss/typography")],
 };
