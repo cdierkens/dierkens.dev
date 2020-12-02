@@ -10,7 +10,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     createNodeField({
       name: "slug",
       node,
-      value: `/blog${value}`
+      value: `/blog${value}`,
     });
   }
 };
@@ -44,12 +44,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         __dirname,
         "src/components/PostLayout/PostLayout.tsx"
       ),
-      context: { id: node.id }
+      context: { id: node.id },
     });
   });
 };
 
-const replacePath = path =>
+const replacePath = (path) =>
   path === `/` ? path : path.replace(/\/$/, ``).toLowerCase();
 
 exports.onCreatePage = ({ page, actions }) => {
@@ -62,15 +62,15 @@ exports.onCreatePage = ({ page, actions }) => {
       fromPath: page.path,
       toPath: path,
       isPermanent: true,
-      redirectInBrowser: true
+      redirectInBrowser: true,
     });
 
     deletePage(page);
     createPage({
       ...page,
       ...{
-        path
-      }
+        path,
+      },
     });
   }
 };
@@ -80,9 +80,9 @@ exports.onCreateWebpackConfig = ({ stage, actions }) => {
     actions.setWebpackConfig({
       resolve: {
         alias: {
-          "react-dom": "@hot-loader/react-dom"
-        }
-      }
+          "react-dom": "@hot-loader/react-dom",
+        },
+      },
     });
   }
 };

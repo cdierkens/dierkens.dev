@@ -1,16 +1,15 @@
 import React from "react";
-import Container from "../Container";
+import { Title } from "react-head";
 import NavBar from "../NavBar";
 import "./Layout.css";
 
 const Layout: React.FC = ({ children }) => (
   <>
-    <header className="mb-4">
+    <Title>Dierkens Dev</Title>
+    <header>
       <NavBar />
     </header>
-    <main className="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto">
-      <Container>{children}</Container>
-    </main>
+    <main>{children}</main>
     <footer></footer>
   </>
 );

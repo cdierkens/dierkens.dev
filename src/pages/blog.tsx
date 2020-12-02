@@ -21,7 +21,7 @@ interface MDX {
 }
 
 export const pageQuery = graphql`
-  query BlogPageQuery {
+  query IndexPageQuery {
     allMdx(limit: 10) {
       nodes {
         id
@@ -38,10 +38,10 @@ export const pageQuery = graphql`
   }
 `;
 
-const Index: React.FC<PageProps<MDX>> = ({ data: { allMdx } }) => {
+const BlogPage: React.FC<PageProps<MDX>> = ({ data: { allMdx } }) => {
   return (
     <Layout>
-      <h1>Dierkens Dev</h1>
+      <h1>Blogs</h1>
 
       {allMdx.nodes.map(
         ({
@@ -64,4 +64,4 @@ const Index: React.FC<PageProps<MDX>> = ({ data: { allMdx } }) => {
   );
 };
 
-export default Index;
+export default BlogPage;

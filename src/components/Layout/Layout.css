@@ -1,4 +1,4 @@
-@import 'prismjs/themes/prism.css';
+@import "prismjs/themes/prism.css";
 
 @tailwind base;
 
@@ -14,6 +14,10 @@ body {
   @apply font-serif text-base leading-normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body main {
+  @apply prose lg:prose-lg xl:prose-2xl mx-auto py-16;
 }
 
 code,
@@ -48,8 +52,8 @@ input {
 }
 
 button:not(.link),
-input[type='submit'],
-input[type='button'] {
+input[type="submit"],
+input[type="button"] {
   @apply bg-yellow-500 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 rounded cursor-pointer;
 
   @apply hover:bg-yellow-400 hover:border-yellow-500;
