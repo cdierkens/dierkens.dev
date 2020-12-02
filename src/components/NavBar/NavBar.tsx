@@ -1,6 +1,5 @@
 import { Link } from "gatsby";
-import React, { useCallback, useState } from "react";
-import useMatchMedia from "../../hooks/useMatchMedia";
+import React from "react";
 import styles from "./NavBar.module.css";
 
 const NavBarLinks: React.FC = () => (
@@ -25,33 +24,11 @@ const Logo: React.FC = () => (
   </div>
 );
 
-interface MenuButtonProps {
-  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-}
-
-const MenuButton: React.FC<MenuButtonProps> = ({ onClick }) => (
-  <div className={styles.ButtonWrapper}>
-    <button onClick={onClick}>
-      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-        <title>Menu</title>
-        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-      </svg>
-    </button>
-  </div>
-);
-
 const NavBar: React.FC = () => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
-
-  const handler = useCallback(() => setMenuOpen(true), []);
-
-  useMatchMedia("(min-width: 1024px)", handler);
-
   return (
     <nav className={styles.NavBar}>
       <Logo />
-      <MenuButton onClick={() => setMenuOpen((isMenuOpen) => !isMenuOpen)} />
-      {isMenuOpen && <NavBarLinks />}
+      <NavBarLinks />
     </nav>
   );
 };

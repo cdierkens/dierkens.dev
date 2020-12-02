@@ -27,19 +27,3 @@
 
   @apply hover:text-white hover:border-white;
 }
-
-.ButtonWrapper {
-  @apply flex items-center;
-
-  @apply lg:hidden;
-}
-
-.ButtonWrapper button {
-  @apply flex items-center px-3 py-2 border rounded text-blue-200 border-blue-400;
-
-  @apply hover:text-white hover:border-white;
-}
-
-.ButtonWrapper svg {
-  @apply fill-current h-3 w-3;
-}
