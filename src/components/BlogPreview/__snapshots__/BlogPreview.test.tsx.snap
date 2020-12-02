@@ -2,42 +2,46 @@
 
 exports[`matches snapshot 1`] = `
 <DocumentFragment>
-  <section
+  <a
     class="BlogPreview"
   >
-    <h2
-      class="Title"
+    <section
+      class="shadow border border-gray-400 bg-white rounded flex flex-col justify-between p-4 transition-transform transform scale-100 rotate-0 hover:scale-105 hover:rotate-1"
     >
-      Does drinking coffee make you a better developer?
-    </h2>
-    <p
-      class="Description"
-    >
-      Alcatra venison sirloin, dolore magna cupidatat boudin nostrud. Eiusmod ut prosciutto, fatback ipsum leberkas bresaola beef ribs. Porchetta exercitation pastrami kevin frankfurter aliqua. Burgdoggen minim rump dolore swine, shoulder velit ball tip drumstick aute eiusmod adipisicing pancetta strip steak non. Kielbasa tri-tip id beef ribs chuck chicken.
-    </p>
-    <div
-      class="flex items-center"
-    >
-      <img
-        alt="Avatar of Christopher Dierkens"
-        class="w-10 h-10 rounded-full mr-4"
-        src="/images/avatar-dierkens-chris.jpg"
-      />
-      <div
-        class="text-sm"
+      <h2
+        class="Title"
       >
-        <p
-          class="text-gray-900 my-1"
+        Does drinking coffee make you a better developer?
+      </h2>
+      <p
+        class="Description"
+      >
+        Alcatra venison sirloin, dolore magna cupidatat boudin nostrud. Eiusmod ut prosciutto, fatback ipsum leberkas bresaola beef ribs. Porchetta exercitation pastrami kevin frankfurter aliqua. Burgdoggen minim rump dolore swine, shoulder velit ball tip drumstick aute eiusmod adipisicing pancetta strip steak non. Kielbasa tri-tip id beef ribs chuck chicken.
+      </p>
+      <div
+        class="flex items-center"
+      >
+        <img
+          alt="Avatar of Christopher Dierkens"
+          class="w-10 h-10 rounded-full mr-4"
+          src="/images/avatar-dierkens-chris.jpg"
+        />
+        <div
+          class="text-sm"
         >
-          Christopher Dierkens
-        </p>
-        <p
-          class="text-gray-600 my-1"
-        >
-          Sunday, March 1, 2020
-        </p>
+          <p
+            class="text-gray-900 my-1"
+          >
+            Christopher Dierkens
+          </p>
+          <p
+            class="text-gray-600 my-1"
+          >
+            9 months ago
+          </p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </a>
 </DocumentFragment>
 `;

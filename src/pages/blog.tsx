@@ -1,5 +1,6 @@
 import { graphql, PageProps } from "gatsby";
 import React from "react";
+import { Title } from "react-head";
 import { BlogPreview, Layout } from "../components";
 
 interface Frontmatter {
@@ -21,7 +22,7 @@ interface MDX {
 }
 
 export const pageQuery = graphql`
-  query IndexPageQuery {
+  query BlogPageQuery {
     allMdx(limit: 10) {
       nodes {
         id
@@ -41,6 +42,8 @@ export const pageQuery = graphql`
 const BlogPage: React.FC<PageProps<MDX>> = ({ data: { allMdx } }) => {
   return (
     <Layout>
+      <Title>Dierkens Dev - Blog</Title>
+
       <h1>Blogs</h1>
 
       {allMdx.nodes.map(

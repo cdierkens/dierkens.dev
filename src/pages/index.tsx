@@ -21,7 +21,7 @@ interface MDX {
 }
 
 export const pageQuery = graphql`
-  query BlogPageQuery {
+  query IndexPageQuery {
     allMdx(limit: 10) {
       nodes {
         id

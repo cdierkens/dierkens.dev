@@ -34,27 +34,25 @@ const PostLayout: React.FC<PageProps<MDX, PageContext>> = ({
   pageContext.frontmatter = mdx.frontmatter;
 
   return (
-    <>
-      <Layout>
-        <Title>Dierkens Dev - {mdx.frontmatter.title}</Title>
-        <Meta name="description" content={mdx.frontmatter.description} />
+    <Layout>
+      <Title>Dierkens Dev - Blog - {mdx.frontmatter.title}</Title>
+      <Meta name="description" content={mdx.frontmatter.description} />
 
-        <article>
-          <h1>{mdx.frontmatter.title}</h1>
-          <p>
-            <span>{mdx.frontmatter.author}</span> -{" "}
-            <span>
-              {formatDistance(new Date(mdx.frontmatter.date), new Date(), {
-                addSuffix: true,
-              })}
-            </span>
-          </p>
-          <MDXProvider components={shortcodes}>
-            <MDXRenderer pageContext={pageContext}>{mdx.body}</MDXRenderer>
-          </MDXProvider>
-        </article>
-      </Layout>
-    </>
+      <article>
+        <h1>{mdx.frontmatter.title}</h1>
+        <p>
+          <span>{mdx.frontmatter.author}</span> -{" "}
+          <span>
+            {formatDistance(new Date(mdx.frontmatter.date), new Date(), {
+              addSuffix: true,
+            })}
+          </span>
+        </p>
+        <MDXProvider components={shortcodes}>
+          <MDXRenderer pageContext={pageContext}>{mdx.body}</MDXRenderer>
+        </MDXProvider>
+      </article>
+    </Layout>
   );
 };
 
