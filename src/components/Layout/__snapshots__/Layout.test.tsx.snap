@@ -32,7 +32,9 @@ exports[`matches snapshot 1`] = `
       </div>
     </nav>
   </header>
-  <main />
+  <main
+    class="content"
+  />
   <footer />
 </DocumentFragment>
 `;
