@@ -10,6 +10,7 @@ it("matches snapshot", () => {
       author="Christopher Dierkens"
       date="Sunday, March 1, 2020"
       avatar="/images/avatar-dierkens-chris.jpg"
+      href="mock-href"
     />
   );
 

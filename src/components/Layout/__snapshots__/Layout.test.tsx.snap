@@ -2,9 +2,7 @@
 
 exports[`matches snapshot 1`] = `
 <DocumentFragment>
-  <header
-    class="mb-4"
-  >
+  <header>
     <nav
       class="NavBar"
     >
@@ -13,7 +11,7 @@ exports[`matches snapshot 1`] = `
       >
         <a
           class="Link"
-          href=""
+          href="/"
         >
           Christopher Dierkens
         </a>
@@ -37,11 +35,7 @@ exports[`matches snapshot 1`] = `
       </div>
     </nav>
   </header>
-  <main
-    class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto"
-  >
-    <div />
-  </main>
+  <main />
   <footer />
 </DocumentFragment>
 `;

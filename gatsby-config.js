@@ -54,6 +54,7 @@ module.exports = {
         path: `${__dirname}/src/posts/`,
       },
     },
+    "gatsby-plugin-react-head",
     "gatsby-plugin-offline",
   ],
 };

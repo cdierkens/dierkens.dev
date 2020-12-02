@@ -9,23 +9,9 @@ const NavBarLinks: React.FC = () => (
       <Link
         className={styles.Link}
         activeClassName={styles.ActiveLink}
-        to="/about"
-      >
-        About
-      </Link>
-      <Link
-        className={styles.Link}
-        activeClassName={styles.ActiveLink}
         to="/blog"
       >
         Blog
-      </Link>
-      <Link
-        className={styles.Link}
-        activeClassName={styles.ActiveLink}
-        to="/uses"
-      >
-        Uses
       </Link>
     </div>
   </div>
@@ -33,7 +19,7 @@ const NavBarLinks: React.FC = () => (
 
 const Logo: React.FC = () => (
   <div className={styles.Logo}>
-    <Link className={styles.Link} activeClassName={styles.ActiveLink} to="">
+    <Link className={styles.Link} activeClassName={styles.ActiveLink} to="/">
       Christopher Dierkens
     </Link>
   </div>
