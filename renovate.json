@@ -1,4 +1,5 @@
 {
   "assignees": ["cdierkens"],
-  "extends": ["config:base"]
+  "extends": ["config:base"],
+  "commitMessageSuffix": "[skip ci]"
 }
