@@ -4,6 +4,7 @@ exports[`matches snapshot 1`] = `
 <DocumentFragment>
   <a
     class="BlogPreview"
+    href="mock-href"
   >
     <section
       class="shadow border border-gray-400 bg-white rounded flex flex-col justify-between p-4 transition-transform transform scale-100 rotate-0 hover:scale-105 hover:rotate-1"
