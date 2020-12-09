@@ -46,7 +46,7 @@
     "gatsby-remark-prismjs": "3.9.0",
     "gatsby-source-filesystem": "2.7.0",
     "gatsby-transformer-remark": "2.12.0",
-    "postcss": "8.2.0",
+    "postcss": "8.2.1",
     "postcss-import": "13.0.0",
     "prismjs": "1.22.0",
     "react": "17.0.1",
