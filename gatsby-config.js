@@ -63,5 +63,6 @@ module.exports = {
         generateRoutingRules: false,
       },
     },
+    "gatsby-plugin-client-side-redirect",
   ],
 };

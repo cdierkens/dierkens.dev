@@ -56,7 +56,7 @@ const Index: React.FC<PageProps<MDX>> = ({ data: { allMdx } }) => {
             author={author}
             date={date}
             avatar={avatar}
-            href={`/blog/${slug}`}
+            href={`/blog/${slug}/`}
           />
         )
       )}

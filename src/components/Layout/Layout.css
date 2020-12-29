@@ -16,7 +16,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body main.content {
+body main {
   @apply prose lg:prose-lg xl:prose-2xl mx-auto py-16 px-2;
 }
 

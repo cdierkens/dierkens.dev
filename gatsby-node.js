@@ -49,19 +49,18 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   });
 };
 
-const removeTrailingSlash = (path) =>
-  path === `/` ? path : path.replace(/\/$/, ``).toLowerCase();
+const addTrailingSlash = (path) => (path.endsWith("/") ? path : `${path}/`);
 
 exports.onCreatePage = ({ page, actions }) => {
   const { createRedirect } = actions;
 
-  const path = removeTrailingSlash(page.path);
+  const path = addTrailingSlash(page.path);
 
   // Redirect to trailing slash with a 302 to match AWS S3
   if (page.path !== path) {
     createRedirect({
-      fromPath: path,
-      toPath: page.path,
+      toPath: path,
+      fromPath: page.path,
       isPermanent: false,
       redirectInBrowser: true,
     });

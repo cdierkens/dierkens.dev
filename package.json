@@ -35,6 +35,7 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "gatsby": "2.29.2",
     "gatsby-image": "2.8.0",
+    "gatsby-plugin-client-side-redirect": "1.1.0",
     "gatsby-plugin-eslint": "2.0.8",
     "gatsby-plugin-mdx": "1.7.1",
     "gatsby-plugin-offline": "3.7.1",

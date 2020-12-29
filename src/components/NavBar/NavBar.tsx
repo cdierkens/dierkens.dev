@@ -8,7 +8,7 @@ const NavBarLinks: React.FC = () => (
       <Link
         className={styles.Link}
         activeClassName={styles.ActiveLink}
-        to="/blog"
+        to="/blog/"
       >
         Blog
       </Link>
