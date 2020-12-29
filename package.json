@@ -12,7 +12,9 @@
     "serve": "gatsby serve",
     "test": "jest --watch",
     "test:ci": "jest",
-    "deploy": "gatsby-plugin-s3 deploy -y"
+    "deploy": "npm run sync && npm run invalidate",
+    "sync": "aws s3 sync public s3://dierkens-dev-static-assets-production --delete",
+    "invalidate": "aws cloudfront create-invalidation --distribution-id EXVDLIG8FU5J6 --paths \"/*\" --no-cli-pager"
   },
   "dependencies": {
     "@hot-loader/react-dom": "17.0.1",

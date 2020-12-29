@@ -24,7 +24,7 @@ exports[`matches snapshot 1`] = `
         >
           <a
             class="Link"
-            href="/blog"
+            href="/blog/"
           >
             Blog
           </a>
@@ -32,9 +32,7 @@ exports[`matches snapshot 1`] = `
       </div>
     </nav>
   </header>
-  <main
-    class="content"
-  />
+  <main />
   <footer />
 </DocumentFragment>
 `;

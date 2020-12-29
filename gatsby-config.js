@@ -56,13 +56,6 @@ module.exports = {
     },
     "gatsby-plugin-react-head",
     "gatsby-plugin-offline",
-    {
-      resolve: `gatsby-plugin-s3`,
-      options: {
-        bucketName: `dierkens-dev-static-assets-${process.env.NODE_ENV}`,
-        generateRoutingRules: false,
-      },
-    },
     "gatsby-plugin-client-side-redirect",
   ],
 };
