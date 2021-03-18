@@ -3,7 +3,7 @@
   "private": true,
   "description": "Blog for Dierkens the Dev",
   "version": "0.1.0",
-  "author": "Christopher Dierkens <cjdierkens@gmail.com.com>",
+  "author": "Christopher Dierkens <cjdierkens@gmail.com>",
   "scripts": {
     "start": "gatsby develop",
     "check": "tsc --noEmit",
@@ -64,6 +64,7 @@
     "@babel/preset-typescript": "7.13.0",
     "@testing-library/jest-dom": "5.11.9",
     "@testing-library/react": "11.2.5",
+    "babel-eslint": "10.1.0",
     "babel-jest": "26.6.3",
     "babel-preset-gatsby": "1.1.0",
     "concurrently": "6.0.0",

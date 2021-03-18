@@ -1,7 +1,7 @@
 import { formatDistance } from "date-fns";
 import { Link } from "gatsby";
 import React from "react";
-import styles from "./BlogPreview.module.css";
+import * as styles from "./BlogPreview.module.css";
 
 interface BlogPreviewProps {
   author: string;
