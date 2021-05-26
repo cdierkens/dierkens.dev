@@ -1,6 +1,12 @@
 {
   "assignees": ["cdierkens"],
-  "extends": ["config:base", ":automergePatch"],
+  "extends": ["config:base"],
   "dependencyDashboard": true,
-  "stabilityDays": 10
+  "stabilityDays": 10,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ]
 }
