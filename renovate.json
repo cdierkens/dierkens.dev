@@ -1,5 +1,6 @@
 {
   "assignees": ["cdierkens"],
-  "extends": ["config:base"],
-  "commitMessageSuffix": "[skip ci]"
+  "extends": ["config:base", ":automergePatch"],
+  "dependencyDashboard": true,
+  "stabilityDays": 10
 }
