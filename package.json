@@ -47,7 +47,7 @@
     "gatsby-plugin-react-head": "1.1.0",
     "gatsby-plugin-s3": "0.3.8",
     "gatsby-plugin-typescript": "3.9.0",
-    "gatsby-plugin-webfonts": "2.1.0",
+    "gatsby-plugin-webfonts": "2.1.1",
     "gatsby-remark-prismjs": "5.6.0",
     "gatsby-source-filesystem": "3.9.0",
     "gatsby-transformer-remark": "4.6.0",
