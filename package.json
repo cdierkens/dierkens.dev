@@ -25,7 +25,7 @@
     "@types/mdx-js__react": "1.5.4",
     "@types/react": "17.0.19",
     "@types/react-dom": "17.0.9",
-    "autoprefixer": "10.3.4",
+    "autoprefixer": "10.3.7",
     "cssnano": "5.0.8",
     "date-fns": "2.24.0",
     "eslint": "7.32.0",
