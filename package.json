@@ -68,7 +68,7 @@
     "babel-eslint": "10.1.0",
     "babel-jest": "27.3.1",
     "babel-preset-gatsby": "1.14.0",
-    "concurrently": "6.3.0",
+    "concurrently": "6.4.0",
     "husky": "6.0.0",
     "identity-obj-proxy": "3.0.0",
     "inquirer-fuzzy-path": "2.3.0",
