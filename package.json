@@ -40,7 +40,7 @@
     "gatsby": "4.4.0",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-client-side-redirect": "1.1.0",
-    "gatsby-plugin-eslint": "3.0.0",
+    "gatsby-plugin-eslint": "4.0.2",
     "gatsby-plugin-mdx": "3.4.0",
     "gatsby-plugin-offline": "5.4.0",
     "gatsby-plugin-postcss": "5.4.0",
