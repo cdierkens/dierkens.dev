@@ -64,7 +64,7 @@
     "@babel/core": "7.17.8",
     "@babel/preset-typescript": "7.16.7",
     "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "12.1.4",
+    "@testing-library/react": "12.1.5",
     "babel-eslint": "10.1.0",
     "babel-jest": "27.4.6",
     "babel-preset-gatsby": "2.4.0",
