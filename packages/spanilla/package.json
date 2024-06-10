@@ -1,6 +1,6 @@
 {
   "name": "@dierkens.dev/spanilla",
-  "version": "0.1.0-rc.2",
+  "version": "0.1.0-rc.3",
   "main": "dist/spanilla.js",
   "umd:main": "dist/spanilla.umd.js",
   "module": "dist/spanilla.js",
