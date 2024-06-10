@@ -20,13 +20,15 @@ function isVNode(value: unknown): value is VNode {
 export class Conditional<TSignal = unknown> {
   private node: Node | undefined;
   public parentNode: Node | undefined | null;
-  private rendered = false;
+  private rendered: boolean;
 
   constructor(
     signal: Signal<TSignal>,
     predicate: (value: TSignal) => boolean,
     vNode: VNode
   ) {
+    this.rendered = false;
+
     signal.subscribe((value) => {
       if (!this.parentNode) {
         return;
