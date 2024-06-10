@@ -1,6 +1,6 @@
 {
   "name": "@dierkens.dev/spanilla",
-  "version": "0.1.0-rc.5",
+  "version": "0.1.0-rc.6",
   "main": "dist/spanilla.js",
   "umd:main": "dist/spanilla.umd.js",
   "module": "dist/spanilla.js",
@@ -21,13 +21,11 @@
     "build": "tsup",
     "prepublishOnly": "pnpm run build"
   },
-  "dependencies": {
-    "htm": "3.1.1"
-  },
   "devDependencies": {
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.14.1",
     "esbuild-plugin-umd-wrapper": "2.0.0",
+    "htm": "3.1.1",
     "tsup": "8.1.0"
   }
 }
