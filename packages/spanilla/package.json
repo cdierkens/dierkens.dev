@@ -1,10 +1,11 @@
 {
   "name": "@dierkens.dev/spanilla",
-  "version": "0.1.0",
+  "version": "0.1.0-rc.1",
   "main": "dist/spanilla.js",
   "umd:main": "dist/spanilla.umd.js",
   "module": "dist/spanilla.js",
   "types": "dist/spanilla.d.ts",
+  "license": "MIT",
   "exports": {
     ".": {
       "source": "./src/spanilla.ts",
