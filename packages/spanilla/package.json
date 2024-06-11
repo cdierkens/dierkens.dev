@@ -1,6 +1,6 @@
 {
   "name": "@dierkens.dev/spanilla",
-  "version": "0.1.0-rc.8",
+  "version": "0.1.0-rc.9",
   "type": "module",
   "files": [
     "dist"
@@ -21,8 +21,8 @@
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "pnpm run build",
-    "prepack": "cp package.json _package.json && sed '/\"source\"\\:/d' package.json",
-    "postpack": "mv _package.json package.json"
+    "prepack": "sed -i '_backup' '/\"source\"\\:/d' package.json",
+    "postpack": "mv package.json_backup package.json"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
