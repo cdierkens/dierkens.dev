@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Conditional, Router, Signal, html, render } from "./spanilla";
+import { Conditional, Router, Signal, html, mount, render } from "./spanilla";
 
 const isJSDOM = window.navigator.userAgent.includes("jsdom");
 
@@ -8,7 +8,7 @@ describe("spanilla", () => {
     const root = document.createElement("div");
     const vnode = html`Hello, World!`;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe("Hello, World!");
   });
@@ -20,7 +20,7 @@ describe("spanilla", () => {
       <p>This is a paragraph.</p>
     `;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe(
       "<h1>Hello, World!</h1><p>This is a paragraph.</p>",
@@ -32,7 +32,7 @@ describe("spanilla", () => {
     const signal = new Signal("Hello, World!");
     const vnode = html`${signal}`;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe("Hello, World!");
 
@@ -46,7 +46,7 @@ describe("spanilla", () => {
     const promise = Promise.resolve("Hello, World!");
     const vnode = html`${promise}`;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe("");
 
@@ -61,7 +61,7 @@ describe("spanilla", () => {
     const signal = new Signal("Hello, World!");
     const vnode = html`<span title=${signal}></span>`;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe('<span title="Hello, World!"></span>');
 
@@ -74,7 +74,7 @@ describe("spanilla", () => {
     const root = document.createElement("div");
     const vnode = html`<a href="/about">About</a>`;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe('<a href="/about">About</a>');
 
@@ -91,7 +91,7 @@ describe("spanilla", () => {
     const root = document.createElement("div");
     const vnode = html`<a href="https://example.com">Example</a>`;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe('<a href="https://example.com">Example</a>');
 
@@ -109,7 +109,7 @@ describe("spanilla", () => {
       ${html`<p>This is a paragraph.</p>`}
     `;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe(
       "<h1>Hello, World!</h1><p>This is a paragraph.</p>",
@@ -123,46 +123,68 @@ describe("spanilla", () => {
       ${new Conditional(show, (show) => show, html`Hello, World!`)}
     `;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     expect(root.innerHTML).toBe("Hello, World!");
 
     show.value = false;
 
     expect(root.innerHTML).toBe("");
+
+    show.value = true;
+
+    expect(root.innerHTML).toBe("Hello, World!");
   });
 
   it.skipIf(isJSDOM)("renders a Router element", () => {
     console.log("window.name", window.name);
     const root = document.createElement("div");
     const vnode = html`
-      <div>
-        ${new Router({
-          "/": html`<h1>Home</h1>`,
-          "/about": html`<h1>About</h1>`,
-        })}
-      </div>
+      ${new Router({
+        "/": html`<h1>Home</h1>`,
+        "/about": html`<h1>About</h1>`,
+      })}
 
       <a href="/">Home</a>
       <a href="/about">About</a>
       <a href="/content">Content</a>
     `;
 
-    render(root, vnode);
+    mount(root, vnode);
 
     (root.querySelector("a[href='/']") as HTMLAnchorElement)?.click();
     expect(root.innerHTML).toBe(
-      '<div><h1>Home</h1></div><a href="/">Home</a><a href="/about">About</a><a href="/content">Content</a>',
+      '<h1>Home</h1><a href="/">Home</a><a href="/about">About</a><a href="/content">Content</a>',
     );
 
     (root.querySelector("a[href='/about']") as HTMLAnchorElement)?.click();
     expect(root.innerHTML).toBe(
-      '<div><h1>About</h1></div><a href="/">Home</a><a href="/about">About</a><a href="/content">Content</a>',
+      '<h1>About</h1><a href="/">Home</a><a href="/about">About</a><a href="/content">Content</a>',
     );
 
     (root.querySelector("a[href='/content']") as HTMLAnchorElement)?.click();
     expect(root.innerHTML).toBe(
-      '<div></div><a href="/">Home</a><a href="/about">About</a><a href="/content">Content</a>',
+      '<a href="/">Home</a><a href="/about">About</a><a href="/content">Content</a>',
     );
+  });
+
+  it("renders html", () => {
+    expect(render(html`Hello, World!`)).toBe("Hello, World!");
+
+    expect(render(html`<h1>Hello, World!</h1>`)).toBe("<h1>Hello, World!</h1>");
+
+    const signal = new Signal("Hello, World!");
+    expect(render(html`${signal}`)).toBe("Hello, World!");
+
+    const vnode = html`<span title=${signal}></span>`;
+    expect(render(vnode)).toBe('<span title="Hello, World!"></span>');
+
+    const show = new Signal(true);
+    const conditional = new Conditional(
+      show,
+      (show) => show,
+      html`Hello, World!`,
+    );
+    expect(render(html`${conditional}`)).toBe("Hello, World!");
   });
 });

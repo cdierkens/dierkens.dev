@@ -13,12 +13,26 @@ if (!globalThis.window) {
 
 const vnodeSymbol = Symbol("vnode");
 
-type VNode = {
+interface VNode {
   type: string;
   props: Record<string, string | Signal | Function>;
   children: VNode[] | string;
   [vnodeSymbol]: true;
-};
+}
+
+type Mountee =
+  | VNode
+  | string
+  | Signal
+  | Node
+  | null
+  | Conditional
+  | VNode[]
+  | HTMLElement;
+
+interface Mountable {
+  mount(element: HTMLElement): void;
+}
 
 function h(type: VNode["type"], props: VNode["props"], ...children: VNode[]) {
   return { type, props, children, [vnodeSymbol]: true as const };
@@ -28,36 +42,32 @@ function isVNode(value: unknown): value is VNode {
   return value !== null && typeof value === "object" && vnodeSymbol in value;
 }
 
-export class Conditional<TSignal = unknown> {
+export class Conditional<TSignal = unknown> implements Mountable {
   private node: Node | undefined;
-  private _parentNode: Node | undefined | null;
+  private parentNode: HTMLElement | undefined | null;
   private rendered: boolean;
 
   constructor(
     private signal: Signal<TSignal>,
     private predicate: (value: TSignal) => boolean,
-    private vNode:
-      | VNode
-      | string
-      | Signal
-      | Node
-      | null
-      | Conditional
-      | VNode[],
+    private vNode: Mountee,
   ) {
     this.rendered = false;
 
-    signal.subscribe((value) => this.render(value));
+    signal.subscribe((value) => this.update(value));
   }
 
-  set parentNode(node: Node | undefined | null) {
-    this._parentNode = node;
+  mount(element: HTMLElement): void {
+    this.parentNode = element;
+    this.node = document.createTextNode("");
 
-    this.render(this.signal.value);
+    element.appendChild(this.node);
+
+    this.update(this.signal.value);
   }
 
-  render(value: TSignal) {
-    if (!this._parentNode) {
+  private update(value: TSignal) {
+    if (!this.parentNode) {
       return;
     }
 
@@ -66,7 +76,9 @@ export class Conditional<TSignal = unknown> {
         return;
       }
 
-      this.node = render(this._parentNode, this.vNode);
+      const newNode = mount(document.createElement("span"), this.vNode) as Node;
+      this.parentNode.replaceChild(newNode, this.node as Node);
+      this.node = newNode;
 
       this.rendered = true;
     } else {
@@ -74,7 +86,9 @@ export class Conditional<TSignal = unknown> {
         return;
       }
 
-      this._parentNode.removeChild(this.node);
+      const newNode = document.createTextNode("");
+      this.parentNode.replaceChild(newNode, this.node as Node);
+      this.node = newNode;
 
       this.rendered = false;
     }
@@ -83,19 +97,16 @@ export class Conditional<TSignal = unknown> {
 
 interface Routes {
   [key: string]:
-    | (VNode | string | Signal | Node | null | Conditional | VNode[])
-    | ((data: {
-        urlParams: Params;
-        searchParams: URLSearchParams;
-      }) => VNode | string | Signal | Node | null | Conditional | VNode[]);
+    | Mountee
+    | ((data: { urlParams: Params; searchParams: URLSearchParams }) => Mountee);
 }
 
 type Params = Record<string, string>;
 
-export class Router {
+export class Router implements Mountable {
   public pathname = new Signal(window.location.pathname);
   private node: Node | undefined;
-  public parentNode: Node | undefined;
+  private parentNode: HTMLElement | undefined;
 
   constructor(private routes: Routes) {
     // Listen for back/forward navigation
@@ -103,63 +114,81 @@ export class Router {
       this.pathname.value = window.location.pathname;
     });
 
-    this.pathname.subscribe((pathname) => {
-      if (this.node) {
-        this.node.parentNode?.removeChild(this.node);
-      }
-
-      const key = Object.keys(this.routes).find((key) => {
-        const parts = key.split("/");
-        const pathnameParts = pathname.split("/");
-
-        if (parts.length !== pathnameParts.length) {
-          return false;
-        }
-
-        return parts.every((part, index) => {
-          if (part.startsWith("{{") && part.endsWith("}}")) {
-            return true;
-          }
-
-          return part === pathnameParts[index];
-        });
-      });
-
-      const route = key ? this.routes[key] : undefined;
-
-      if (!route || !this.parentNode || !key) {
-        return;
-      }
-
-      if (route instanceof Function) {
-        const values = pathname.split("/");
-        const keys = key.split("/");
-        const urlParams = values.reduce((acc: Params, value, index) => {
-          const key = keys[index];
-          const name = key.match(/^{{(.*?)}}?/);
-
-          if (name) {
-            acc[name[1]] = value;
-          }
-
-          return acc;
-        }, {});
-
-        this.node = render(
-          this.parentNode,
-          route({
-            urlParams,
-            searchParams: new URLSearchParams(window.location.search),
-          }),
-        );
-      } else {
-        this.node = render(this.parentNode, route);
-      }
-    });
+    this.pathname.subscribe((value) => this.update(value));
 
     setTimeout(() => {
       this.pathname.value = window.location.pathname;
     });
+  }
+
+  // TODO: This could be in an abstract class.
+  mount(element: HTMLElement): void {
+    this.parentNode = element;
+    this.node = document.createTextNode("");
+
+    element.appendChild(this.node);
+
+    this.update(this.pathname.value);
+  }
+
+  update(pathname: string) {
+    if (!this.parentNode) {
+      return;
+    }
+
+    const key = Object.keys(this.routes).find((key) => {
+      const parts = key.split("/");
+      const pathnameParts = pathname.split("/");
+
+      if (parts.length !== pathnameParts.length) {
+        return false;
+      }
+
+      return parts.every((part, index) => {
+        if (part.startsWith("{{") && part.endsWith("}}")) {
+          return true;
+        }
+
+        return part === pathnameParts[index];
+      });
+    });
+
+    const route = key ? this.routes[key] : undefined;
+
+    if (!route || !key) {
+      const newNode = document.createTextNode("");
+      this.parentNode.replaceChild(newNode, this.node as Node);
+      this.node = newNode;
+      return;
+    }
+
+    let vNode: Mountee;
+    if (route instanceof Function) {
+      const values = pathname.split("/");
+      const keys = key.split("/");
+      const urlParams = values.reduce((acc: Params, value, index) => {
+        const key = keys[index];
+        const name = key.match(/^{{(.*?)}}?/);
+
+        if (name) {
+          acc[name[1]] = value;
+        }
+
+        return acc;
+      }, {});
+
+      vNode = route({
+        urlParams,
+        searchParams: new URLSearchParams(window.location.search),
+      });
+    } else {
+      vNode = route;
+    }
+
+    // TODO: This is repeated from Conditional.
+    const newNode = mount(document.createElement("span"), vNode) as Node;
+    this.parentNode.replaceChild(newNode, this.node as Node);
+    this.node = newNode;
   }
 }
 
@@ -198,12 +227,8 @@ export class Signal<Value = unknown> {
 
 export const html = htm.bind(h);
 
-export function render(
-  element: Node,
-  node?: VNode | string | Signal | Node | null | Conditional | VNode[],
-  root = element,
-) {
-  // Render primitives first to ensure 0, false, "", etc  are rendered.
+export function mount(element: HTMLElement, node?: Mountee, root = element) {
+  // Mount primitives first to ensure 0, false, "", etc are in the dom.
   if (node === null || node === undefined) {
     return;
   } else if (node instanceof Signal) {
@@ -252,11 +277,11 @@ export function render(
     // TODO: Should we support other node types? Return element?
     return;
   } else if (node instanceof Conditional) {
-    node.parentNode = element;
+    node.mount(element);
     return;
     // TODO: Prove this only happens when there is no root node.
   } else if (node instanceof Router) {
-    node.parentNode = element;
+    node.mount(element);
 
     root.addEventListener("route", (event) => {
       window.history.pushState(
@@ -271,13 +296,13 @@ export function render(
     return;
   } else if (Array.isArray(node)) {
     for (const child of node) {
-      render(element, child, root);
+      mount(element, child, root);
     }
 
     return;
   } else if (node instanceof Promise) {
     node.then((resolvedNode) => {
-      render(element, resolvedNode, root);
+      mount(element, resolvedNode, root);
     });
 
     return element;
@@ -322,7 +347,7 @@ export function render(
     }
 
     for (const child of node.children) {
-      render(el, child, root);
+      mount(el, child, root);
     }
 
     return element.appendChild(el);
@@ -331,4 +356,12 @@ export function render(
 
     return element.appendChild(textNode);
   }
+}
+
+export function render(node: Mountee) {
+  const element = document.createElement("div");
+
+  mount(element, node);
+
+  return element.innerHTML;
 }
