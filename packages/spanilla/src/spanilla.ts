@@ -1,5 +1,16 @@
 import htm from "htm";
 
+if (!globalThis.window) {
+  const { JSDOM } = require("jsdom");
+
+  const dom = new JSDOM("");
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.Node = dom.window.Node;
+  globalThis.CustomEvent = dom.window.CustomEvent;
+  globalThis.MutationObserver = dom.window.MutationObserver;
+}
+
 const vnodeSymbol = Symbol("vnode");
 
 type VNode = {
@@ -10,7 +21,7 @@ type VNode = {
 };
 
 function h(type: VNode["type"], props: VNode["props"], ...children: VNode[]) {
-  return { type, props, children, [vnodeSymbol]: true };
+  return { type, props, children, [vnodeSymbol]: true as const };
 }
 
 function isVNode(value: unknown): value is VNode {
@@ -19,52 +30,70 @@ function isVNode(value: unknown): value is VNode {
 
 export class Conditional<TSignal = unknown> {
   private node: Node | undefined;
-  public parentNode: Node | undefined | null;
+  private _parentNode: Node | undefined | null;
   private rendered: boolean;
 
   constructor(
-    signal: Signal<TSignal>,
-    predicate: (value: TSignal) => boolean,
-    vNode: VNode,
+    private signal: Signal<TSignal>,
+    private predicate: (value: TSignal) => boolean,
+    private vNode:
+      | VNode
+      | string
+      | Signal
+      | Node
+      | null
+      | Conditional
+      | VNode[],
   ) {
     this.rendered = false;
 
-    signal.subscribe((value) => {
-      if (!this.parentNode) {
+    signal.subscribe((value) => this.render(value));
+  }
+
+  set parentNode(node: Node | undefined | null) {
+    this._parentNode = node;
+
+    this.render(this.signal.value);
+  }
+
+  render(value: TSignal) {
+    if (!this._parentNode) {
+      return;
+    }
+
+    if (this.predicate(value)) {
+      if (this.rendered) {
         return;
       }
 
-      if (predicate(value)) {
-        if (this.rendered) {
-          return;
-        }
+      this.node = render(this._parentNode, this.vNode);
 
-        this.node = render(this.parentNode, vNode);
-
-        this.rendered = true;
-      } else {
-        if (!this.rendered || !this.node) {
-          return;
-        }
-
-        this.parentNode.removeChild(this.node);
-
-        this.rendered = false;
+      this.rendered = true;
+    } else {
+      if (!this.rendered || !this.node) {
+        return;
       }
-    });
+
+      this._parentNode.removeChild(this.node);
+
+      this.rendered = false;
+    }
   }
 }
 
 interface Routes {
   [key: string]:
-    | VNode
-    | ((data: { urlParams: Params; searchParams: URLSearchParams }) => VNode);
+    | (VNode | string | Signal | Node | null | Conditional | VNode[])
+    | ((data: {
+        urlParams: Params;
+        searchParams: URLSearchParams;
+      }) => VNode | string | Signal | Node | null | Conditional | VNode[]);
 }
 
 type Params = Record<string, string>;
 
 export class Router {
-  private pathname = new Signal(window.location.pathname);
+  public pathname = new Signal(window.location.pathname);
   private node: Node | undefined;
   public parentNode: Node | undefined;
 
@@ -74,17 +103,11 @@ export class Router {
       this.pathname.value = window.location.pathname;
     });
 
-    window.addEventListener("route", (event) => {
-      window.history.pushState(
-        null,
-        "",
-        (event as CustomEvent<{ href: string }>).detail.href,
-      );
-
-      this.pathname.value = window.location.pathname;
-    });
-
     this.pathname.subscribe((pathname) => {
+      if (this.node) {
+        this.node.parentNode?.removeChild(this.node);
+      }
+
       const key = Object.keys(this.routes).find((key) => {
         const parts = key.split("/");
         const pathnameParts = pathname.split("/");
@@ -106,10 +129,6 @@ export class Router {
 
       if (!route || !this.parentNode || !key) {
         return;
-      }
-
-      if (this.node) {
-        this.parentNode.removeChild(this.node);
       }
 
       if (route instanceof Function) {
@@ -153,8 +172,6 @@ export class Signal<Value = unknown> {
   subscribe(fn: (value: Value) => void) {
     this.handlers.push(fn);
 
-    fn(this._value);
-
     return this.handlers.length - 1;
   }
 
@@ -174,6 +191,7 @@ export class Signal<Value = unknown> {
 
   set value(_value: Value) {
     this._value = _value;
+
     this.handlers.forEach((fn) => fn(_value));
   }
 }
@@ -183,6 +201,7 @@ export const html = htm.bind(h);
 export function render(
   element: Node,
   node?: VNode | string | Signal | Node | null | Conditional | VNode[],
+  root = element,
 ) {
   // Render primitives first to ensure 0, false, "", etc  are rendered.
   if (node === null || node === undefined) {
@@ -193,6 +212,13 @@ export function render(
     const handler = (value: unknown) => {
       textNode.nodeValue = String(value);
     };
+
+    // Subscribe to the signal during the initial render before the
+    // MutationObserver takes over.
+    node.subscribe(handler);
+    setTimeout(() => {
+      node.unsubscribe(handler);
+    }, 0);
 
     new MutationObserver((record) => {
       record.forEach((mutation) => {
@@ -223,31 +249,38 @@ export function render(
       return element.appendChild(node);
     }
 
-    // TODO: Should we support other node types?
+    // TODO: Should we support other node types? Return element?
     return;
-  } else if (node instanceof Conditional || node instanceof Router) {
+  } else if (node instanceof Conditional) {
     node.parentNode = element;
-
     return;
     // TODO: Prove this only happens when there is no root node.
-  } else if (Array.isArray(node)) {
-    const el = document.createElement("span");
+  } else if (node instanceof Router) {
+    node.parentNode = element;
 
-    for (const child of node) {
-      render(el, child);
-    }
+    root.addEventListener("route", (event) => {
+      window.history.pushState(
+        null,
+        "",
+        (event as CustomEvent<{ href: string }>).detail.href,
+      );
 
-    element.appendChild(el);
-
-    return el;
-  } else if (node instanceof Promise) {
-    const el = document.createElement("span");
-
-    node.then((resolvedNode) => {
-      render(el, resolvedNode);
+      node.pathname.value = window.location.pathname;
     });
 
-    return element.appendChild(el);
+    return;
+  } else if (Array.isArray(node)) {
+    for (const child of node) {
+      render(element, child, root);
+    }
+
+    return;
+  } else if (node instanceof Promise) {
+    node.then((resolvedNode) => {
+      render(element, resolvedNode, root);
+    });
+
+    return element;
   } else if (isVNode(node)) {
     const el = document.createElement(node.type);
 
@@ -266,6 +299,8 @@ export function render(
             el.setAttribute(key, String(value));
           });
 
+          el.setAttribute(key, String(value.value));
+
           continue;
         }
 
@@ -274,19 +309,20 @@ export function render(
     }
 
     if (node.type === "a") {
-      const href = el.getAttribute("href");
-
       el.addEventListener("click", (event) => {
-        event.preventDefault();
+        const href = (event.currentTarget as HTMLElement).getAttribute("href");
 
-        if (href) {
-          window.dispatchEvent(new CustomEvent("route", { detail: { href } }));
+        const url = new URL(href || "", window.location.origin);
+
+        if (href && url.origin === window.location.origin) {
+          event.preventDefault();
+          root.dispatchEvent(new CustomEvent("route", { detail: { href } }));
         }
       });
     }
 
     for (const child of node.children) {
-      render(el, child);
+      render(el, child, root);
     }
 
     return element.appendChild(el);

@@ -17,7 +17,6 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      outputDir: "dist",
       rollupTypes: true,
     }),
   ],
