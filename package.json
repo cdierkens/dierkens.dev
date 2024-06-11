@@ -3,6 +3,13 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --recursive --parallel run dev",
-    "build": "pnpm --recursive run build"
+    "build": "pnpm --recursive run build",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "9.0.11",
+    "lint-staged": "15.2.5",
+    "prettier": "3.3.1",
+    "prettier-plugin-organize-imports": "3.2.4"
   }
 }

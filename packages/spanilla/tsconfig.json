@@ -1,6 +1,11 @@
 {
-  "extends": ["@tsconfig/node20/tsconfig.json", "../../tsconfig.base.json"],
+  "extends": [
+    "@tsconfig/recommended/tsconfig.json",
+    "../../tsconfig.base.json"
+  ],
   "compilerOptions": {
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
     "lib": ["dom"]
   },
   "include": ["src"]

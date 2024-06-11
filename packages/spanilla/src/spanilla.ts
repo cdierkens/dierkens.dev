@@ -25,7 +25,7 @@ export class Conditional<TSignal = unknown> {
   constructor(
     signal: Signal<TSignal>,
     predicate: (value: TSignal) => boolean,
-    vNode: VNode
+    vNode: VNode,
   ) {
     this.rendered = false;
 
@@ -78,7 +78,7 @@ export class Router {
       window.history.pushState(
         null,
         "",
-        (event as CustomEvent<{ href: string }>).detail.href
+        (event as CustomEvent<{ href: string }>).detail.href,
       );
 
       this.pathname.value = window.location.pathname;
@@ -131,7 +131,7 @@ export class Router {
           route({
             urlParams,
             searchParams: new URLSearchParams(window.location.search),
-          })
+          }),
         );
       } else {
         this.node = render(this.parentNode, route);
@@ -145,7 +145,10 @@ export class Router {
 }
 
 export class Signal<Value = unknown> {
-  constructor(private _value: Value, private handlers: Function[] = []) {}
+  constructor(
+    private _value: Value,
+    private handlers: Function[] = [],
+  ) {}
 
   subscribe(fn: (value: Value) => void) {
     this.handlers.push(fn);
@@ -179,7 +182,7 @@ export const html = htm.bind(h);
 
 export function render(
   element: Node,
-  node?: VNode | string | Signal | Node | null | Conditional | VNode[]
+  node?: VNode | string | Signal | Node | null | Conditional | VNode[],
 ) {
   // Render primitives first to ensure 0, false, "", etc  are rendered.
   if (node === null || node === undefined) {
