@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { adopt, css, render } from "./css";
+import { installShim } from "./shim";
 import { Signal } from "./signal";
+
+installShim();
 
 describe("css", () => {
   describe("css tagged template literal", () => {
