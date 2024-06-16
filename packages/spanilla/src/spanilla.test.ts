@@ -173,7 +173,7 @@ describe("spanilla", () => {
 
     expect(render(html`<h1>Hello, World!</h1>`)).toBe("<h1>Hello, World!</h1>");
 
-    const signal = new Signal("Hello, World!");
+    const signal = Signal("Hello, World!");
     expect(render(html`${signal}`)).toBe("Hello, World!");
 
     const vnode = html`<span title=${signal}></span>`;

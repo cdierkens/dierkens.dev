@@ -1,4 +1,5 @@
 import htm from "htm";
+import { Signal } from "./signal";
 
 if (!globalThis.window) {
   const { JSDOM } = require("jsdom");
@@ -9,6 +10,7 @@ if (!globalThis.window) {
   globalThis.Node = dom.window.Node;
   globalThis.CustomEvent = dom.window.CustomEvent;
   globalThis.MutationObserver = dom.window.MutationObserver;
+  globalThis.CSSStyleSheet = dom.window.CSSStyleSheet;
 }
 
 const vnodeSymbol = Symbol("vnode");
@@ -192,39 +194,6 @@ export class Router implements Mountable {
   }
 }
 
-export class Signal<Value = unknown> {
-  constructor(
-    private _value: Value,
-    private handlers: Function[] = [],
-  ) {}
-
-  subscribe(fn: (value: Value) => void) {
-    this.handlers.push(fn);
-
-    return this.handlers.length - 1;
-  }
-
-  unsubscribe(fn: (value: Value) => void) {
-    const index = this.handlers.indexOf(fn);
-
-    if (index === -1) {
-      return;
-    }
-
-    this.handlers.splice(index, 1);
-  }
-
-  get value() {
-    return this._value;
-  }
-
-  set value(_value: Value) {
-    this._value = _value;
-
-    this.handlers.forEach((fn) => fn(_value));
-  }
-}
-
 export const html = htm.bind(h);
 
 export function mount(element: HTMLElement, node?: Mountee, root = element) {
@@ -365,3 +334,5 @@ export function render(node: Mountee) {
 
   return element.innerHTML;
 }
+
+export { Signal };
