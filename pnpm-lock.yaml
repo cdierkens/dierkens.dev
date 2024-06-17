@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  rrweb-cssom@0.7.0:
+    hash: iw2lmsbgvzaswzz3dtxjm5o6va
+    path: patches/rrweb-cssom@0.7.0.patch
+
 importers:
 
   .:
@@ -23,12 +28,6 @@ importers:
 
   packages/spanilla:
     dependencies:
-      '@types/cssom':
-        specifier: 0.4.3
-        version: 0.4.3
-      cssom:
-        specifier: 0.5.0
-        version: 0.5.0
       jsdom:
         specifier: 24.1.0
         version: 24.1.0
@@ -401,9 +400,6 @@ packages:
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
 
-  '@types/cssom@0.4.3':
-    resolution: {integrity: sha512-cThQxtgHC2wyXp2gnDd4lh6EJfpmUADIJX613HcmFVwELw/gQya8Ok7EBkJ3g2z9G2N0NNZywXvjZ4A8dPWYFw==}
-
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
@@ -736,9 +732,6 @@ packages:
 
   css-value@0.0.1:
     resolution: {integrity: sha512-FUV3xaJ63buRLgHrLQVlVgQnQdR4yqdLGaDu7g8CQcWjInDfM9plBTPI9FRfpahju1UBSaMckeb2/46ApS/V1Q==}
-
-  cssom@0.5.0:
-    resolution: {integrity: sha512-iKuQcq+NdHqlAcwUY0o/HL69XQrUaQdMjmStJ8JFmUaiiQErlhrmuigkg/CU4E2J0IyUKUrMAgl36TvN67MqTw==}
 
   cssstyle@4.0.1:
     resolution: {integrity: sha512-8ZYiJ3A/3OkDd093CBT/0UKDWry7ak4BdPTFP2+QEP7cmhouyq/Up709ASSj2cK02BbZiMgk7kYjZNS4QP5qrQ==}
@@ -2339,8 +2332,6 @@ snapshots:
 
   '@types/argparse@1.0.38': {}
 
-  '@types/cssom@0.4.3': {}
-
   '@types/estree@1.0.5': {}
 
   '@types/http-cache-semantics@4.0.4': {}
@@ -2738,8 +2729,6 @@ snapshots:
 
   css-value@0.0.1: {}
 
-  cssom@0.5.0: {}
-
   cssstyle@4.0.1:
     dependencies:
       rrweb-cssom: 0.6.0
@@ -3130,7 +3119,7 @@ snapshots:
       is-potential-custom-element-name: 1.0.1
       nwsapi: 2.2.10
       parse5: 7.1.2
-      rrweb-cssom: 0.7.0
+      rrweb-cssom: 0.7.0(patch_hash=iw2lmsbgvzaswzz3dtxjm5o6va)
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 4.1.4
@@ -3583,7 +3572,7 @@ snapshots:
 
   rrweb-cssom@0.6.0: {}
 
-  rrweb-cssom@0.7.0: {}
+  rrweb-cssom@0.7.0(patch_hash=iw2lmsbgvzaswzz3dtxjm5o6va): {}
 
   safaridriver@0.1.2: {}
 

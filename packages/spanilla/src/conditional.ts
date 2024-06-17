@@ -1,4 +1,4 @@
-import { Mountable, Mountee, mount } from "./mount";
+import { Mountable, Mountee, mount } from "./html";
 import { Signal } from "./signal";
 
 export class Conditional<TSignal = unknown> implements Mountable {

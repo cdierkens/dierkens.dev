@@ -137,7 +137,6 @@ describe("spanilla", () => {
   });
 
   it.skipIf(isJSDOM)("renders a Router element", () => {
-    console.log("window.name", window.name);
     const root = document.createElement("div");
     const vnode = html`
       ${new Router({

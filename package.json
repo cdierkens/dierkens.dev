@@ -11,5 +11,10 @@
     "lint-staged": "15.2.5",
     "prettier": "3.3.1",
     "prettier-plugin-organize-imports": "3.2.4"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "rrweb-cssom@0.7.0": "patches/rrweb-cssom@0.7.0.patch"
+    }
   }
 }

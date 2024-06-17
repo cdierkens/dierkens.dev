@@ -5,7 +5,7 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   build: {
     minify: true,
-    sourcemap: true,
+    sourcemap: false,
     lib: {
       entry: resolve(__dirname, "src/spanilla.ts"),
       name: "spanilla",

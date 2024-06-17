@@ -1,13 +1,26 @@
+import { generateId } from "./id";
 import { Signal } from "./signal";
 
-interface vCSSRule {
+const symbol = Symbol.for("VStylesheet");
+
+export function isVStyleSheet(value: unknown): value is VStyleSheet {
+  return value !== null && typeof value === "object" && symbol in value;
+}
+
+export interface VStyleSheet {
+  class: string;
+  rules: VStyleRule[];
+  [symbol]: true;
+}
+
+interface VStyleRule {
   selector: string;
-  declarations: vCSSDeclaration[];
+  declarations: VStyleDeclaration[];
   signals?: Signal[];
   id: number;
 }
 
-interface vCSSDeclaration {
+interface VStyleDeclaration {
   property: string;
   value: string | Array<string | Signal>;
   priority?: string;
@@ -16,7 +29,7 @@ interface vCSSDeclaration {
 export function css(
   strings: TemplateStringsArray,
   ...values: any[]
-): vCSSRule[] {
+): VStyleSheet {
   const parts = strings.reduce((acc: Array<string | any>, str, i) => {
     const trimmed = removeWhitespace(str);
     if (trimmed) {
@@ -30,12 +43,16 @@ export function css(
     return acc;
   }, []);
 
-  const rules: vCSSRule[] = [];
-
-  let rule: Partial<vCSSRule> & Pick<vCSSRule, "id"> = {
-    id: rules.length,
+  const styleSheet: VStyleSheet = {
+    class: generateId(),
+    rules: [],
+    [symbol]: true,
   };
-  let vCSSDeclaration: Partial<vCSSDeclaration> = {};
+
+  let rule: Partial<VStyleRule> & Pick<VStyleRule, "id"> = {
+    id: styleSheet.rules.length,
+  };
+  let vCSSDeclaration: Partial<VStyleDeclaration> = {};
 
   let context: "selector" | "property" | "value" | "priority" = "selector";
 
@@ -47,7 +64,10 @@ export function css(
         if (context === "selector" && char === "{") {
           context = "property";
 
-          rule.selector = stringify(chunks);
+          const selector = stringify(chunks)
+            .split(",")
+            .join(`, .${styleSheet.class}`);
+          rule.selector = `.${styleSheet.class} ${selector}`;
 
           chunks = [];
         } else if (context === "property" && char === ":") {
@@ -65,7 +85,7 @@ export function css(
 
           rule.declarations = rule.declarations || [];
 
-          rule.declarations.push(vCSSDeclaration as vCSSDeclaration);
+          rule.declarations.push(vCSSDeclaration as VStyleDeclaration);
 
           vCSSDeclaration = {};
           chunks = [];
@@ -81,7 +101,7 @@ export function css(
           vCSSDeclaration.priority = stringify(chunks);
 
           rule.declarations = rule.declarations || [];
-          rule.declarations.push(vCSSDeclaration as vCSSDeclaration);
+          rule.declarations.push(vCSSDeclaration as VStyleDeclaration);
           vCSSDeclaration = {};
           chunks = [];
         } else if (char === "}") {
@@ -93,9 +113,9 @@ export function css(
 
           rule.declarations = rule.declarations || [];
 
-          rules.push(rule as vCSSRule);
+          styleSheet.rules.push(rule as VStyleRule);
           rule = {
-            id: rules.length,
+            id: styleSheet.rules.length,
           };
           context = "selector";
         } else {
@@ -114,7 +134,7 @@ export function css(
     }
   }
 
-  return rules;
+  return styleSheet;
 }
 
 function stringify(values: any[]): string {
@@ -125,11 +145,11 @@ function removeWhitespace(value: string): string {
   return value.trim().replace(/\s+/g, " ");
 }
 
-export function createStyleSheet(rules: vCSSRule[]) {
+export function createStyleSheet(vStyleSheet: VStyleSheet) {
   const styleSheet = new CSSStyleSheet();
 
-  for (let index = 0; index < rules.length; index++) {
-    const rule = rules[index];
+  for (let index = 0; index < vStyleSheet.rules.length; index++) {
+    const rule = vStyleSheet.rules[index];
 
     function render() {
       return `${rule.selector} { ${rule.declarations
@@ -157,8 +177,8 @@ export function createStyleSheet(rules: vCSSRule[]) {
   return styleSheet;
 }
 
-export function adopt(rules: vCSSRule[]) {
-  const styleSheet = createStyleSheet(rules);
+export function adopt(vStyleSheet: VStyleSheet) {
+  const styleSheet = createStyleSheet(vStyleSheet);
 
   document.adoptedStyleSheets = document.adoptedStyleSheets
     ? [...document.adoptedStyleSheets, styleSheet]
@@ -167,8 +187,8 @@ export function adopt(rules: vCSSRule[]) {
   return styleSheet;
 }
 
-export function render(rules: vCSSRule[]) {
-  const styleSheet = createStyleSheet(rules);
+export function render(vStyleSheet: VStyleSheet) {
+  const styleSheet = createStyleSheet(vStyleSheet);
 
   return Array.from(styleSheet.cssRules)
     .map((rule) => rule.cssText)

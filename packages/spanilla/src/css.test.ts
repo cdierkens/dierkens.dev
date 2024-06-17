@@ -14,18 +14,22 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: "red",
-            },
-          ],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: "red",
+              },
+            ],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with multiple properties", () => {
@@ -36,22 +40,26 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: "red",
-            },
-            {
-              property: "font-size",
-              value: "24px",
-            },
-          ],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: "red",
+              },
+              {
+                property: "font-size",
+                value: "24px",
+              },
+            ],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with a priority", () => {
@@ -61,19 +69,23 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: "red",
-              priority: "important",
-            },
-          ],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: "red",
+                priority: "important",
+              },
+            ],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with multiple selectors", () => {
@@ -84,18 +96,22 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1, h2",
-          declarations: [
-            {
-              property: "color",
-              value: "red",
-            },
-          ],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1, .${vStyle.class} h2`,
+            declarations: [
+              {
+                property: "color",
+                value: "red",
+              },
+            ],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with multiple rules", () => {
@@ -109,28 +125,32 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: "red",
-            },
-          ],
-        },
-        {
-          id: 1,
-          selector: "h2",
-          declarations: [
-            {
-              property: "color",
-              value: "blue",
-            },
-          ],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: "red",
+              },
+            ],
+          },
+          {
+            id: 1,
+            selector: `.${vStyle.class} h2`,
+            declarations: [
+              {
+                property: "color",
+                value: "blue",
+              },
+            ],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with a signal value", () => {
@@ -142,19 +162,23 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: [signal],
-            },
-          ],
-          signals: [signal],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: [signal],
+              },
+            ],
+            signals: [signal],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with a signal value and a priority", () => {
@@ -166,20 +190,24 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: [signal],
-              priority: "important",
-            },
-          ],
-          signals: [signal],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: [signal],
+                priority: "important",
+              },
+            ],
+            signals: [signal],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with a signal value and multiple rules", () => {
@@ -192,23 +220,27 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: [signal],
-            },
-            {
-              property: "font-size",
-              value: "24px",
-            },
-          ],
-          signals: [signal],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: [signal],
+              },
+              {
+                property: "font-size",
+                value: "24px",
+              },
+            ],
+            signals: [signal],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with a signal value and multiple selectors", () => {
@@ -221,19 +253,23 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1, h2",
-          declarations: [
-            {
-              property: "color",
-              value: [signal],
-            },
-          ],
-          signals: [signal],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1, .${vStyle.class} h2`,
+            declarations: [
+              {
+                property: "color",
+                value: [signal],
+              },
+            ],
+            signals: [signal],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with multiple signal values", () => {
@@ -247,23 +283,27 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "color",
-              value: [signal1],
-            },
-            {
-              property: "font-size",
-              value: [signal2],
-            },
-          ],
-          signals: [signal1, signal2],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "color",
+                value: [signal1],
+              },
+              {
+                property: "font-size",
+                value: [signal2],
+              },
+            ],
+            signals: [signal1, signal2],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
 
     it("parses a css rule with the signal in the middle of a value", () => {
@@ -275,39 +315,45 @@ describe("css", () => {
         }
       `;
 
-      expect(vStyle).toEqual([
-        {
-          id: 0,
-          selector: "h1",
-          declarations: [
-            {
-              property: "border",
-              value: ["1px solid", signal],
-            },
-          ],
-          signals: [signal],
-        },
-      ]);
+      expect(vStyle).toEqual({
+        class: expect.any(String),
+        rules: [
+          {
+            id: 0,
+            selector: `.${vStyle.class} h1`,
+            declarations: [
+              {
+                property: "border",
+                value: ["1px solid", signal],
+              },
+            ],
+            signals: [signal],
+          },
+        ],
+        [Symbol.for("VStylesheet")]: true,
+      });
     });
   });
 
   describe("adopt", () => {
     it("returns a CSSStyleSheet", () => {
-      const rules = css`
+      const vStylesheet = css`
         h1 {
           color: red;
         }
       `;
 
-      const styleSheet = adopt(rules);
+      const styleSheet = adopt(vStylesheet);
 
       expect(styleSheet).toBeInstanceOf(CSSStyleSheet);
       expect(styleSheet.cssRules.length).toBe(1);
-      expect(styleSheet.cssRules[0].cssText).toBe("h1 {color: red;}");
+      expect(styleSheet.cssRules[0].cssText).toBe(
+        `.${vStylesheet.class} h1 { color: red; }`,
+      );
     });
 
     it("returns a CSSStyleSheet with multiple rules", () => {
-      const rules = css`
+      const vStyleSheet = css`
         h1 {
           color: red;
         }
@@ -317,48 +363,56 @@ describe("css", () => {
         }
       `;
 
-      const styleSheet = adopt(rules);
+      const styleSheet = adopt(vStyleSheet);
 
       expect(styleSheet).toBeInstanceOf(CSSStyleSheet);
       expect(styleSheet.cssRules.length).toBe(2);
-      expect(styleSheet.cssRules[0].cssText).toBe("h1 {color: red;}");
-      expect(styleSheet.cssRules[1].cssText).toBe("h2 {color: blue;}");
+      expect(styleSheet.cssRules[0].cssText).toBe(
+        `.${vStyleSheet.class} h1 { color: red; }`,
+      );
+      expect(styleSheet.cssRules[1].cssText).toBe(
+        `.${vStyleSheet.class} h2 { color: blue; }`,
+      );
     });
 
     it("updates a signal value", () => {
       const signal = new Signal("red");
 
-      const rules = css`
+      const vStyleSheet = css`
         h1 {
           color: ${signal};
         }
       `;
 
-      const styleSheet = adopt(rules);
+      const styleSheet = adopt(vStyleSheet);
 
-      expect(styleSheet.cssRules[0].cssText).toBe("h1 {color: red;}");
+      expect(styleSheet.cssRules[0].cssText).toBe(
+        `.${vStyleSheet.class} h1 { color: red; }`,
+      );
 
       signal.value = "blue";
 
-      expect(styleSheet.cssRules[0].cssText).toBe("h1 {color: blue;}");
+      expect(styleSheet.cssRules[0].cssText).toBe(
+        `.${vStyleSheet.class} h1 { color: blue; }`,
+      );
     });
   });
 
   describe("render", () => {
     it("returns a string", () => {
-      const rules = css`
+      const vStyleSheet = css`
         h1 {
           color: red;
         }
       `;
 
-      const cssText = render(rules);
+      const cssText = render(vStyleSheet);
 
-      expect(cssText).toBe("h1 {color: red;}");
+      expect(cssText).toBe(`.${vStyleSheet.class} h1 { color: red; }`);
     });
 
     it("returns a string with multiple rules", () => {
-      const rules = css`
+      const vStyleSheet = css`
         h1 {
           color: red;
         }
@@ -368,23 +422,25 @@ describe("css", () => {
         }
       `;
 
-      const cssText = render(rules);
+      const cssText = render(vStyleSheet);
 
-      expect(cssText).toBe("h1 {color: red;} h2 {color: blue;}");
+      expect(cssText).toBe(
+        `.${vStyleSheet.class} h1 { color: red; } .${vStyleSheet.class} h2 { color: blue; }`,
+      );
     });
 
     it("updates a signal value", () => {
       const signal = new Signal("red");
 
-      const rules = css`
+      const vStyle = css`
         h1 {
           color: ${signal};
         }
       `;
 
-      const cssText = render(rules);
+      const cssText = render(vStyle);
 
-      expect(cssText).toBe("h1 {color: red;}");
+      expect(cssText).toBe(`.${vStyle.class} h1 { color: red; }`);
     });
   });
 });
