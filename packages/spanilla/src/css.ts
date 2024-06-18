@@ -65,7 +65,6 @@ export function css(
           context = "property";
 
           let selector = stringify(chunks);
-          console.log({ selector });
 
           if (selector.includes("&")) {
             selector = selector.replace(/&/g, `.${styleSheet.class}`);
