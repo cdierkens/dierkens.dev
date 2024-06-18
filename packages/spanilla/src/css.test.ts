@@ -432,15 +432,33 @@ describe("css", () => {
     it("updates a signal value", () => {
       const signal = new Signal("red");
 
-      const vStyle = css`
+      const vStyleSheet = css`
         h1 {
           color: ${signal};
         }
       `;
 
-      const cssText = render(vStyle);
+      const cssText = render(vStyleSheet);
 
-      expect(cssText).toBe(`.${vStyle.class} h1 { color: red; }`);
+      expect(cssText).toBe(`.${vStyleSheet.class} h1 { color: red; }`);
+    });
+
+    it("renders & styles", () => {
+      const vStyleSheet = css`
+        &:hover {
+          color: red;
+        }
+
+        & {
+          color: blue;
+        }
+      `;
+
+      const cssText = render(vStyleSheet);
+
+      expect(cssText).toBe(
+        `.${vStyleSheet.class}:hover { color: red; } .${vStyleSheet.class} { color: blue; }`,
+      );
     });
   });
 });

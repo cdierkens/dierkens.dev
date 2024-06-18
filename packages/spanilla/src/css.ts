@@ -64,10 +64,16 @@ export function css(
         if (context === "selector" && char === "{") {
           context = "property";
 
-          const selector = stringify(chunks)
-            .split(",")
-            .join(`, .${styleSheet.class}`);
-          rule.selector = `.${styleSheet.class} ${selector}`;
+          let selector = stringify(chunks);
+          console.log({ selector });
+
+          if (selector.includes("&")) {
+            selector = selector.replace(/&/g, `.${styleSheet.class}`);
+          } else {
+            selector = `.${styleSheet.class} ${selector.split(",").join(`, .${styleSheet.class}`)}`;
+          }
+
+          rule.selector = selector;
 
           chunks = [];
         } else if (context === "property" && char === ":") {
