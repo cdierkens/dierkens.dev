@@ -1,5 +1,6 @@
 import htm from "htm";
 import { Conditional } from "./conditional";
+import { adopt, isVStyleSheet } from "./css";
 import { Router } from "./router";
 import { Signal } from "./signal";
 
@@ -7,7 +8,7 @@ const symbol = Symbol.for("VNode");
 
 export interface VNode {
   type: string;
-  props: Record<string, string | Signal | Function>;
+  props: Record<string, string | Signal | Function | true>;
   children: VNode[] | string;
   [symbol]: true;
 }
@@ -128,21 +129,25 @@ export function mount(element: HTMLElement, node?: Mountee, root = element) {
           el.addEventListener(key.slice(2), (event) => {
             value(event);
           });
-
-          continue;
-        }
-
-        if (value instanceof Signal) {
+        } else if (value instanceof Signal) {
           value.subscribe((value: unknown) => {
             el.setAttribute(key, String(value));
           });
 
           el.setAttribute(key, String(value.value));
+        } else if (value === true) {
+          el.setAttribute(key, "");
+        } else if (isVStyleSheet(value) && key === "style") {
+          el.classList.add(value.class);
 
-          continue;
+          const isJSDOM = window.navigator.userAgent.includes("jsdom");
+
+          if (!isJSDOM) {
+            adopt(value);
+          }
+        } else {
+          el.setAttribute(key, value);
         }
-
-        el.setAttribute(key, value);
       }
     }
 
@@ -175,6 +180,10 @@ export function render(node: Mountee) {
   const element = document.createElement("div");
 
   mount(element, node);
+
+  if (element.children.length === 1 && element.children[0].tagName === "HTML") {
+    return `<!DOCTYPE html>${element.innerHTML}`;
+  }
 
   return element.innerHTML;
 }

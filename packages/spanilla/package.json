@@ -11,7 +11,7 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "source": "./src/spanilla.ts",
+      "@dierkens.dev/source": "./src/spanilla.ts",
       "types": "./dist/spanilla.d.ts",
       "import": "./dist/spanilla.js",
       "require": "./spanilla.umd.cjs"
@@ -21,7 +21,7 @@
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "pnpm run build",
-    "prepack": "sed -i '_backup' '/\"source\"\\:/d' package.json",
+    "prepack": "sed -i '_backup' '/source\"\\:/d' package.json",
     "postpack": "mv package.json_backup package.json",
     "test:browser": "vitest --browser chrome",
     "test": "vitest"
@@ -30,7 +30,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "@tsconfig/recommended": "1.0.6",
+    "@tsconfig/vite-react": "3.0.2",
     "@types/jsdom": "21.1.7",
     "@types/node": "20.14.1",
     "@vitest/browser": "1.6.0",

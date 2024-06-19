@@ -1,9 +1,21 @@
-import { describe, expect, it } from "vitest";
-import { Conditional, Router, Signal, html, mount, render } from "./spanilla";
+import { beforeAll, describe, expect, it } from "vitest";
+import {
+  Conditional,
+  Router,
+  Signal,
+  html,
+  installShim,
+  mount,
+  render,
+} from "./spanilla";
 
-const isJSDOM = window.navigator.userAgent.includes("jsdom");
+const isNode = typeof window === "undefined";
 
 describe("spanilla", () => {
+  beforeAll(() => {
+    return installShim();
+  });
+
   it("renders simple a string", () => {
     const root = document.createElement("div");
     const vnode = html`Hello, World!`;
@@ -70,7 +82,7 @@ describe("spanilla", () => {
     expect(root.innerHTML).toBe('<span title="Goodbye, World!"></span>');
   });
 
-  it.skipIf(isJSDOM)("hijacks the anchor elements", () => {
+  it.skipIf(isNode)("hijacks the anchor elements", () => {
     const root = document.createElement("div");
     const vnode = html`<a href="/about">About</a>`;
 
@@ -87,7 +99,7 @@ describe("spanilla", () => {
     });
   });
 
-  it.skipIf(isJSDOM)("does not hijack remote anchar elements", () => {
+  it.skipIf(isNode)("does not hijack remote anchar elements", () => {
     const root = document.createElement("div");
     const vnode = html`<a href="https://example.com">Example</a>`;
 
@@ -136,7 +148,7 @@ describe("spanilla", () => {
     expect(root.innerHTML).toBe("Hello, World!");
   });
 
-  it.skipIf(isJSDOM)("renders a Router element", () => {
+  it.skipIf(isNode)("renders a Router element", () => {
     const root = document.createElement("div");
     const vnode = html`
       ${new Router({
@@ -185,5 +197,22 @@ describe("spanilla", () => {
       html`Hello, World!`,
     );
     expect(render(html`${conditional}`)).toBe("Hello, World!");
+  });
+
+  it("renders a full html document", () => {
+    const vnode = html`
+      <html>
+        <head>
+          <title>Hello, World!</title>
+        </head>
+        <body>
+          <h1>Hello, World!</h1>
+        </body>
+      </html>
+    `;
+
+    expect(render(vnode)).toBe(
+      "<!DOCTYPE html><html><head><title>Hello, World!</title></head><body><h1>Hello, World!</h1></body></html>",
+    );
   });
 });

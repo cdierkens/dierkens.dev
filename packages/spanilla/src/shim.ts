@@ -1,9 +1,9 @@
-export function installShim() {
+export async function installShim() {
   if (!globalThis.window) {
-    const { JSDOM } = require("jsdom");
+    const { JSDOM } = await import("jsdom");
 
     const dom = new JSDOM("");
-    globalThis.window = dom.window;
+    globalThis.window = dom.window as typeof globalThis.window;
     globalThis.document = dom.window.document;
     globalThis.Node = dom.window.Node;
     globalThis.CustomEvent = dom.window.CustomEvent;

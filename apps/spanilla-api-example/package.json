@@ -1,0 +1,19 @@
+{
+  "name": "@dierkens.dev/spanilla-api-example",
+  "private": true,
+  "version": "0.1.0-rc.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch './src'"
+  },
+  "dependencies": {
+    "@dierkens.dev/spanilla": "workspace:*",
+    "@fastify/cors": "9.0.1",
+    "fastify": "4.27.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.1",
+    "tsup": "8.1.0"
+  }
+}

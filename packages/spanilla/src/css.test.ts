@@ -1,11 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { adopt, css, render } from "./css";
 import { installShim } from "./shim";
 import { Signal } from "./signal";
 
-installShim();
-
 describe("css", () => {
+  beforeAll(async () => {
+    await installShim();
+  });
+
   describe("css tagged template literal", () => {
     it("parses a simple css rule", () => {
       const vStyle = css`
