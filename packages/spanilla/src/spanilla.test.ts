@@ -18,9 +18,9 @@ describe("spanilla", () => {
 
   it("renders simple a string", () => {
     const root = document.createElement("div");
-    const vnode = html`Hello, World!`;
+    const vNode = html`Hello, World!`;
 
-    mount(root, vnode);
+    mount(root, vNode);
 
     expect(root.innerHTML).toBe("Hello, World!");
   });
@@ -116,12 +116,12 @@ describe("spanilla", () => {
 
   it("renders nested html templates", () => {
     const root = document.createElement("div");
-    const vnode = html`
+    const vNode = html`
       <h1>Hello, World!</h1>
       ${html`<p>This is a paragraph.</p>`}
     `;
 
-    mount(root, vnode);
+    mount(root, vNode);
 
     expect(root.innerHTML).toBe(
       "<h1>Hello, World!</h1><p>This is a paragraph.</p>",

@@ -1,10 +1,14 @@
-import { Mountable, Mountee, mount } from "./html";
-import { Signal } from "./signal";
+import { Mountable, VNode, mount } from "./html.js";
+import { Signal } from "./signal.js";
 
 interface Routes {
   [key: string]:
-    | Mountee
-    | ((data: { urlParams: Params; searchParams: URLSearchParams }) => Mountee);
+    | VNode
+    | VNode[]
+    | ((data: {
+        urlParams: Params;
+        searchParams: URLSearchParams;
+      }) => VNode | VNode[]);
 }
 
 type Params = Record<string, string>;
@@ -12,7 +16,7 @@ type Params = Record<string, string>;
 export class Router implements Mountable {
   public pathname: Signal<string>;
   private node: Node | undefined;
-  private parentNode: HTMLElement | undefined;
+  private parentNode: Node | undefined;
 
   constructor(private routes: Routes) {
     this.pathname = new Signal(window.location.pathname);
@@ -30,13 +34,13 @@ export class Router implements Mountable {
   }
 
   // TODO: This could be in an abstract class.
-  mount(element: HTMLElement): void {
+  mount(element: Node) {
     this.parentNode = element;
-    this.node = document.createTextNode("");
-
-    element.appendChild(this.node);
+    this.node = element.appendChild(document.createTextNode(""));
 
     this.update(this.pathname.value);
+
+    return this.node;
   }
 
   update(pathname: string) {
@@ -70,7 +74,7 @@ export class Router implements Mountable {
       return;
     }
 
-    let vNode: Mountee;
+    let vNode: VNode | VNode[];
     if (route instanceof Function) {
       const values = pathname.split("/");
       const keys = key.split("/");

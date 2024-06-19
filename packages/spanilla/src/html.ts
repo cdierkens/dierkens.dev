@@ -1,6 +1,6 @@
 import htm from "htm";
 import { Conditional } from "./conditional";
-import { adopt, isVStyleSheet } from "./css";
+import { VStyleSheet, adopt, isVStyleSheet } from "./css";
 import { Router } from "./router";
 import { Signal } from "./signal";
 
@@ -8,7 +8,7 @@ const symbol = Symbol.for("VNode");
 
 export interface VNode {
   type: string;
-  props: Record<string, string | Signal | Function | true>;
+  props: Record<string, string | Signal | Function | true | VStyleSheet>;
   children: VNode[] | string;
   [symbol]: true;
 }
@@ -17,7 +17,7 @@ export function h(
   type: VNode["type"],
   props: VNode["props"],
   ...children: VNode[]
-) {
+): VNode {
   return { type, props, children, [symbol]: true as const };
 }
 
@@ -28,25 +28,30 @@ export function isVNode(value: unknown): value is VNode {
 export const html = htm.bind(h);
 
 export interface Mountable {
-  mount(element: HTMLElement): void;
+  mount(element: Node): Node;
 }
 
-export type Mountee =
+// TODO: Store, If, For, Async.
+// TODO: primitives and promises are not components.
+export type Component =
+  | Signal
+  | Conditional
+  | Router
   | VNode
   | string
-  | Signal
-  | Node
-  | null
-  | Conditional
-  | VNode[]
-  | HTMLElement;
+  | number
+  | boolean
+  | Promise<Component | Component[]>;
 
-export function mount(element: HTMLElement, node?: Mountee, root = element) {
-  // Mount primitives first to ensure 0, false, "", etc are in the dom.
-  if (node === null || node === undefined) {
-    return;
-  } else if (node instanceof Signal) {
-    const textNode = document.createTextNode(String(node.value));
+// Note: root is used for event delegation.
+// TODO: Break this up into the external mount function, mount children, and mount one.
+export function mount(
+  element: Node,
+  component: Component | Component[],
+  root: Node = element,
+): Node | Node[] {
+  if (component instanceof Signal) {
+    const textNode = document.createTextNode(String(component.value));
 
     const handler = (value: unknown) => {
       textNode.nodeValue = String(value);
@@ -54,49 +59,35 @@ export function mount(element: HTMLElement, node?: Mountee, root = element) {
 
     // Subscribe to the signal during the initial render before the
     // MutationObserver takes over.
-    node.subscribe(handler);
+    component.subscribe(handler);
     setTimeout(() => {
-      node.unsubscribe(handler);
+      component.unsubscribe(handler);
     }, 0);
 
     new MutationObserver((record) => {
       record.forEach((mutation) => {
         mutation.addedNodes.forEach((addedNode) => {
           if (addedNode === textNode) {
-            node.subscribe(handler);
+            component.subscribe(handler);
           }
         });
 
         mutation.removedNodes.forEach((removedNode) => {
           if (removedNode === textNode) {
-            node.unsubscribe(handler);
+            component.unsubscribe(handler);
           }
         });
       });
 
-      textNode.nodeValue = String(node.value);
+      textNode.nodeValue = String(component.value);
     }).observe(element, {
       childList: true,
     });
 
     return element.appendChild(textNode);
-  } else if (node instanceof Node) {
-    if (
-      node.nodeType === Node.TEXT_NODE ||
-      node.nodeType === Node.ELEMENT_NODE
-    ) {
-      return element.appendChild(node);
-    }
-
-    // TODO: Should we support other node types? Return element?
-    return;
-  } else if (node instanceof Conditional) {
-    node.mount(element);
-    return;
-    // TODO: Prove this only happens when there is no root node.
-  } else if (node instanceof Router) {
-    node.mount(element);
-
+  } else if (component instanceof Conditional) {
+    return component.mount(element);
+  } else if (component instanceof Router) {
     root.addEventListener("route", (event) => {
       window.history.pushState(
         null,
@@ -104,27 +95,24 @@ export function mount(element: HTMLElement, node?: Mountee, root = element) {
         (event as CustomEvent<{ href: string }>).detail.href,
       );
 
-      node.pathname.value = window.location.pathname;
+      component.pathname.value = window.location.pathname;
     });
 
-    return;
-  } else if (Array.isArray(node)) {
-    for (const child of node) {
-      mount(element, child, root);
-    }
-
-    return;
-  } else if (node instanceof Promise) {
-    node.then((resolvedNode) => {
+    return component.mount(element);
+  } else if (Array.isArray(component)) {
+    return component.flatMap((child) => mount(element, child, root));
+  } else if (component instanceof Promise) {
+    component.then((resolvedNode) => {
       mount(element, resolvedNode, root);
     });
 
+    // TODO: Nothing is appended until the promise resolves.
     return element;
-  } else if (isVNode(node)) {
-    const el = document.createElement(node.type);
+  } else if (isVNode(component)) {
+    const el = document.createElement(component.type);
 
-    if (node.props) {
-      for (const [key, value] of Object.entries(node.props)) {
+    if (component.props) {
+      for (const [key, value] of Object.entries(component.props)) {
         if (typeof value === "function") {
           el.addEventListener(key.slice(2), (event) => {
             value(event);
@@ -137,7 +125,11 @@ export function mount(element: HTMLElement, node?: Mountee, root = element) {
           el.setAttribute(key, String(value.value));
         } else if (value === true) {
           el.setAttribute(key, "");
-        } else if (isVStyleSheet(value) && key === "style") {
+        } else if (isVStyleSheet(value)) {
+          if (key !== "style") {
+            throw new Error("Only class is supported for stylesheets.");
+          }
+
           el.classList.add(value.class);
 
           const isJSDOM = window.navigator.userAgent.includes("jsdom");
@@ -151,7 +143,7 @@ export function mount(element: HTMLElement, node?: Mountee, root = element) {
       }
     }
 
-    if (node.type === "a") {
+    if (component.type === "a") {
       el.addEventListener("click", (event) => {
         const href = (event.currentTarget as HTMLElement).getAttribute("href");
 
@@ -164,23 +156,24 @@ export function mount(element: HTMLElement, node?: Mountee, root = element) {
       });
     }
 
-    for (const child of node.children) {
+    for (const child of component.children) {
       mount(el, child, root);
     }
 
     return element.appendChild(el);
   } else {
-    const textNode = document.createTextNode(node.toString());
+    const textNode = document.createTextNode(component.toString());
 
     return element.appendChild(textNode);
   }
 }
 
-export function render(node: Mountee) {
+export function render(vNode: Component | Component[]): string {
   const element = document.createElement("div");
 
-  mount(element, node);
+  mount(element, vNode);
 
+  // TODO: This is a hack to get the doctype to render. Too much magic?
   if (element.children.length === 1 && element.children[0].tagName === "HTML") {
     return `<!DOCTYPE html>${element.innerHTML}`;
   }

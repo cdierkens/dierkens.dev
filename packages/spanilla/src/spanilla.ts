@@ -1,7 +1,7 @@
 import { VStyleSheet, isVStyleSheet, render as renderCSS } from "./css";
-import { Mountee, render as renderHTML } from "./html";
+import { Component, render as renderHTML } from "./html";
 
-export function render(value: VStyleSheet | Mountee) {
+export function render(value: VStyleSheet | Component | Component[]) {
   if (isVStyleSheet(value)) {
     return renderCSS(value);
   } else {
@@ -12,7 +12,7 @@ export { Conditional } from "./conditional";
 export { adopt, css } from "./css";
 export type { VStyleSheet } from "./css";
 export { html, mount } from "./html";
-export type { Mountee, VNode } from "./html";
+export type { Component, VNode } from "./html";
 export { Router } from "./router";
 export { installShim } from "./shim";
 export { Signal } from "./signal";

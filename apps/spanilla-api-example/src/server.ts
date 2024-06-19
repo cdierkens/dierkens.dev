@@ -1,10 +1,10 @@
 import {
+  VNode,
+  VStyleSheet,
   css,
   html,
   installShim,
-  Mountee,
   render,
-  VStyleSheet,
 } from "@dierkens.dev/spanilla";
 import cors from "@fastify/cors";
 import fastify from "fastify";
@@ -15,7 +15,7 @@ const server = fastify();
 
 server.register(cors);
 
-const layout = (template: Mountee, styles: Array<VStyleSheet>) => html`
+const layout = (template: VNode | VNode[], styles: Array<VStyleSheet>) => html`
   <html>
     <head>
       <meta charset="utf-8" />
