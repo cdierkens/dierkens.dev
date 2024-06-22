@@ -9,5 +9,6 @@ export async function installShim() {
     globalThis.CustomEvent = dom.window.CustomEvent;
     globalThis.MutationObserver = dom.window.MutationObserver;
     globalThis.CSSStyleSheet = dom.window.CSSStyleSheet;
+    globalThis.MouseEvent = dom.window.MouseEvent;
   }
 }
