@@ -76,7 +76,7 @@ describe("component", () => {
   });
 
   it("renders a Counter component", () => {
-    const Counter = createComponent((props: { foo: "string" }) => {
+    const Counter = createComponent(() => {
       const count = Signal(0);
       const increment = () => {
         count.value++;

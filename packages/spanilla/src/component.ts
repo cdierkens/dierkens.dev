@@ -85,13 +85,21 @@ class Component<Props = unknown> {
 }
 
 /**
- * 
+ * Creates a component.
+ *
+ * @param {function} render - The render function. This function should return a template.
+ * It also defines what props the component accepts.
+ * @param {['key', ...]} watch - An array of prop keys whose values are signals to watch for
+ * changes. If the matching signal changes, the component will re-render.
+ * @returns A component function which accepts props, and component lifecycle
+ * hooks.
+ *
  * @example
  * const Counter = createComponent(({count, children}: CounterProps) => {
  * 	function incrementCount() {
  * 		count.value++
  * 	}
- * 
+ *
  * 	return html`
  * 		<p>The count is ${count}</p>
  * 		<button onclick="${incrementCount}">
@@ -99,42 +107,81 @@ class Component<Props = unknown> {
  * 		</button>
  * 	`
  * })
- * 
+ *
  * html`
  * 	<div>
- * 		${Counter({ 
- * 			children: html`Increment the count!`, 
- * 			count: createSignal(0) 
- * 		}, { 
+ * 		${Counter({
+ * 			children: html`Increment the count!`,
+ * 			count: createSignal(0)
+ * 		}, {
  * 			onMount: () => console.log('on mount'),
- * 			onCleanup: () => console.log('on cleanup') 
+ * 			onCleanup: () => console.log('on cleanup')
  * 		})}
  * 	</div>
  * `
+ *
+ * @example
+ * const Show = createComponent(
+ *     (props: { show: Signal<boolean> }) => {
+ *       return props.show.value
+ *         ? html`<p>Hello, World!</p>`
+ *         : html`<p>Goodbye, World!</p>`;
+ *     },
+ *     ["show"],
+ *   );
+ *
+ * const show = Signal(true);
+ *
+ * html`${Show({ show })}`; // <p>Hello, World!</p>
+ *
+ * show.value = false;
+ *
+ * html`${Show({ show })}`; // <p>Goodbye, World!</p>
+ *
+ **/
+export function createComponent(
+  render: () => Template,
+): (hooks?: ComponentHooks) => Component;
 
-**/
 export function createComponent<Props>(
   render: (props: Props) => Template,
-  watch?: Array<keyof Props>,
+  watch?: [KeysOfType<Props, Signal>],
+): (props: Props, hooks?: ComponentHooks) => Component<Props>;
+
+export function createComponent<Props>(
+  render: (props?: Props) => Template,
+  watch?: [KeysOfType<Props, Signal>],
 ) {
-  return (props?: Props, hooks?: ComponentHooks) => {
-    const component = new Component({ render, props, hooks });
+  if (render.arguments.length === 1) {
+    return function (props: Props, hooks?: ComponentHooks) {
+      const component = new Component({ render, props, hooks });
 
-    for (const key of watch || []) {
-      if (props) {
-        const prop = props[key];
+      if (watch) {
+        for (const key of watch) {
+          if (props) {
+            const prop = props[key];
 
-        if (prop instanceof Signal) {
-          prop.subscribe(() => {
-            component.update(props);
-          });
+            if (prop instanceof Signal) {
+              prop.subscribe(() => {
+                component.update(props);
+              });
+            }
+          }
         }
       }
-    }
 
-    return component;
-  };
+      return component;
+    };
+  } else {
+    return function (hooks?: ComponentHooks) {
+      return new Component({ render, hooks });
+    };
+  }
 }
+
+type KeysOfType<T, U> = {
+  [K in keyof T]: T[K] extends U ? K : never;
+}[keyof T];
 
 // TODO: No recursion.
 export function mount(
