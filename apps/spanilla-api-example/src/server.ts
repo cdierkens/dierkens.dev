@@ -4,8 +4,8 @@ import {
   css,
   html,
   installShim,
-  render,
 } from "@dierkens.dev/spanilla";
+import { render } from "@dierkens.dev/spanilla/server";
 import cors from "@fastify/cors";
 import fastify from "fastify";
 

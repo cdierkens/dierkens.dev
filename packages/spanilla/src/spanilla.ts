@@ -1,5 +1,5 @@
-import { VStyleSheet, isVStyleSheet, render as renderCSS } from "./css";
-import { Component, render as renderHTML } from "./html";
+import { VStyleSheet, isVStyleSheet, render as renderCSS } from "./lib/css";
+import { Component, render as renderHTML } from "./lib/html";
 
 export function render(value: VStyleSheet | Component | Component[]) {
   if (isVStyleSheet(value)) {
@@ -8,11 +8,11 @@ export function render(value: VStyleSheet | Component | Component[]) {
     return renderHTML(value);
   }
 }
-export { Conditional } from "./conditional";
-export { adopt, css } from "./css";
-export type { VStyleSheet } from "./css";
-export { html, mount } from "./html";
-export type { Component, VNode } from "./html";
-export { Router } from "./router";
-export { installShim } from "./shim";
-export { Signal } from "./signal";
+export { Conditional } from "./lib/conditional";
+export { adopt, css } from "./lib/css";
+export type { VStyleSheet } from "./lib/css";
+export { html, mount } from "./lib/html";
+export type { Component, VNode } from "./lib/html";
+export { Router } from "./lib/router";
+export { installShim } from "./lib/shim";
+export { Signal } from "./lib/signal";

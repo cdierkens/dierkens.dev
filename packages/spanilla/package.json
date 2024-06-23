@@ -16,6 +16,18 @@
       "import": "./dist/spanilla.js",
       "require": "./spanilla.umd.cjs"
     },
+    "./server": {
+      "@dierkens.dev/source": "./src/server.ts",
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "require": "./server.umd.cjs"
+    },
+    "./web": {
+      "@dierkens.dev/source": "./src/web.ts",
+      "types": "./dist/web.d.ts",
+      "import": "./dist/web.js",
+      "require": "./web.umd.cjs"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

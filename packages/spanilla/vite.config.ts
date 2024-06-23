@@ -10,9 +10,11 @@ export default defineConfig({
     minify: true,
     sourcemap: false,
     lib: {
-      entry: resolve(__dirname, "src/spanilla.ts"),
-      name: "spanilla",
-      fileName: "spanilla",
+      entry: [
+        resolve(__dirname, "src/spanilla.ts"),
+        resolve(__dirname, "src/web.ts"),
+        resolve(__dirname, "src/server.ts"),
+      ],
     },
     rollupOptions: {
       external: ["jsdom"],
