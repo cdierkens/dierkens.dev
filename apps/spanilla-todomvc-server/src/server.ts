@@ -1,81 +1,114 @@
-import { Router, Signal, html } from "@dierkens.dev/spanilla";
 import { render } from "@dierkens.dev/spanilla/server";
-import cors from "@fastify/cors";
+import fastifyCookie from "@fastify/cookie";
+import fastifyFormBody from "@fastify/formbody";
 import fastify from "fastify";
-import { layout } from "./templates/layout";
+import { Todo, todoPage } from "./todo.page";
 
 const server = fastify();
 
-server.register(cors);
+server.register(fastifyFormBody);
+server.register(fastifyCookie);
 
-const links = [
-  {
-    label: "All",
-    href: "/",
-  },
-  {
-    label: "Active",
-    href: "/active",
-  },
-  {
-    label: "Completed",
-    href: "/completed",
-  },
-];
+const todos = new Set<Todo>();
 
-server.get("*", async (request, reply) => {
+server.addHook("onRequest", async (request, _) => {
+  const todosCookie = request.cookies.todos;
+  if (todosCookie) {
+    const parsedTodos = JSON.parse(todosCookie) as Todo[];
+    for (const todo of parsedTodos) {
+      todos.add(todo);
+    }
+  }
+});
+
+server.addHook("onResponse", (_, reply) => {
+  reply.setCookie("todos", JSON.stringify([...todos]));
+});
+
+server.get("/", async (request, reply) => {
   reply.type("text/html");
 
-  return render(
-    layout(html`
-      <header class="header">
-        <h1>todos</h1>
-        <input
-          id="new-todo"
-          class="new-todo"
-          placeholder="What needs to be done?"
-          autofocus
-        />
-      </header>
+  return render(todoPage([...todos], () => true, request.url));
+});
 
-      <main class="main">
-        <div class="toggle-all-container">
-          <input class="toggle-all" id="toggle-all" type="checkbox" />
-          <label class="toggle-all-label" for="toggle-all"
-            >Mark all as complete</label
-          >
-        </div>
-        <ul class="todo-list">
-          ${Router({
-            routes: {
-              "/": html`<li class="todo">Hello, World!</li>`,
-              "/active": html`<li class="todo">Active</li>`,
-              "/completed": html`<li class="todo">Completed</li>`,
-            },
-            pathname: Signal(request.url),
-          })}
-        </ul>
-      </main>
+server.get("/completed", async (request, reply) => {
+  reply.type("text/html");
 
-      <footer class="footer">
-        <span class="todo-count"></span>
-        <ul class="filters">
-          ${links.map((link) => {
-            return html`
-              <li>
-                <a
-                  href="${link.href}"
-                  class="${request.url === link.href ? "selected" : ""}"
-                  >${link.label}</a
-                >
-              </li>
-            `;
-          })}
-        </ul>
-        <button class="clear-completed">Clear completed</button>
-      </footer>
-    `),
-  );
+  return render(todoPage([...todos], (todo) => todo.completed, request.url));
+});
+
+server.get("/active", async (request, reply) => {
+  reply.type("text/html");
+
+  return render(todoPage([...todos], (todo) => !todo.completed, request.url));
+});
+
+type AddAction = {
+  action: "add";
+  label: string;
+};
+
+type ToggleAction = {
+  action: "toggle";
+  id: string;
+};
+
+type CompleteAllAction = {
+  action: "complete-all";
+};
+
+type DeleteAction = {
+  action: "delete";
+  id: string;
+};
+
+type ClearCompletedAction = {
+  action: "clear-completed";
+};
+
+type Action =
+  | AddAction
+  | ToggleAction
+  | CompleteAllAction
+  | DeleteAction
+  | ClearCompletedAction;
+
+server.post("*", async (request, reply) => {
+  reply.type("text/html");
+
+  const action = request.body as Action;
+
+  if (action.action === "add") {
+    todos.add({
+      id: String(todos.size),
+      label: action.label,
+      completed: false,
+    });
+  } else if (action.action === "toggle") {
+    for (const todo of todos) {
+      if (todo.id === action.id) {
+        todo.completed = !todo.completed;
+      }
+    }
+  } else if (action.action === "complete-all") {
+    for (const todo of todos) {
+      todo.completed = true;
+    }
+  } else if (action.action === "delete") {
+    for (const todo of todos) {
+      if (todo.id === action.id) {
+        todos.delete(todo);
+      }
+    }
+  } else if (action.action === "clear-completed") {
+    for (const todo of todos) {
+      if (todo.completed) {
+        todos.delete(todo);
+      }
+    }
+  }
+
+  reply.redirect(request.url);
 });
 
 server.listen({ port: 8080 }, (err, address) => {

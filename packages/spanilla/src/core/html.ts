@@ -96,8 +96,10 @@ function _mount(
           });
 
           el.setAttribute(key, String(value.value));
-        } else if (value === true) {
-          el.setAttribute(key, "");
+        } else if (typeof value === "boolean") {
+          if (value) {
+            el.setAttribute(key, "");
+          }
         } else {
           el.setAttribute(key, value);
         }
