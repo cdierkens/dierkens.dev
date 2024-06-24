@@ -1,15 +1,7 @@
-import {
-  VNode,
-  VStyleSheet,
-  css,
-  html,
-  installShim,
-} from "@dierkens.dev/spanilla";
+import { VNode, VStyleSheet, css, html } from "@dierkens.dev/spanilla";
 import { render } from "@dierkens.dev/spanilla/server";
 import cors from "@fastify/cors";
 import fastify from "fastify";
-
-await installShim();
 
 const server = fastify();
 
@@ -50,8 +42,8 @@ server.get("/", async (_, reply) => {
 
   return render(
     layout(
-      html`<h1 style="${h1Styles}">Hello Spanilla!</h1>
-        <p style="${pStyles}">
+      html`<h1 class="${h1Styles.class}">Hello Spanilla!</h1>
+        <p class="${pStyles.class}">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
           minim veniam, quis nostrud exercitation ullamco laboris nisi ut

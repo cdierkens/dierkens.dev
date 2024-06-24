@@ -53,6 +53,7 @@
     "webdriverio": "8.38.2"
   },
   "dependencies": {
+    "global-jsdom": "24.0.0",
     "jsdom": "24.1.0",
     "vite": "5.2.13"
   }

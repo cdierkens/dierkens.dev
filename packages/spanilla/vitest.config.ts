@@ -6,5 +6,6 @@ export default defineConfig({
       headless: true,
       name: "chrome",
     },
+    setupFiles: ["./vitest.setup.ts"],
   },
 });

@@ -182,24 +182,6 @@ export function createStyleSheet(vStyleSheet: VStyleSheet) {
   return styleSheet;
 }
 
-export function adopt(vStyleSheet: VStyleSheet) {
-  const styleSheet = createStyleSheet(vStyleSheet);
-
-  document.adoptedStyleSheets = document.adoptedStyleSheets
-    ? [...document.adoptedStyleSheets, styleSheet]
-    : [styleSheet];
-
-  return styleSheet;
-}
-
-export function render(vStyleSheet: VStyleSheet) {
-  const styleSheet = createStyleSheet(vStyleSheet);
-
-  return Array.from(styleSheet.cssRules)
-    .map((rule) => rule.cssText)
-    .join(" ");
-}
-
 function compact(array: Array<string | Signal>) {
   let prevIndex = 0;
   const compacted = [];

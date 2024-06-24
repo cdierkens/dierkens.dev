@@ -47,6 +47,9 @@ importers:
 
   packages/spanilla:
     dependencies:
+      global-jsdom:
+        specifier: 24.0.0
+        version: 24.0.0(jsdom@24.1.0)
       jsdom:
         specifier: 24.1.0
         version: 24.1.0
@@ -1311,6 +1314,12 @@ packages:
     resolution: {integrity: sha512-2jelhlq3E4ho74ZyVLN03oKdAZVUa6UDZzFLVH1H7dnoax+y9qyaq8zBkfDIggjniU19z0wU18y16jMB2eyVIw==}
     engines: {node: '>=16 || 14 >=14.18'}
     hasBin: true
+
+  global-jsdom@24.0.0:
+    resolution: {integrity: sha512-CARBUWkqZ3O9VOc2PIVE5kQpdQeJh9eF9kQ7zSeNtmqx5vAFDKMr9XnDt1epVMMrz1s9uK/yFCa4HLwpa6TcPA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      jsdom: '>=24 <25'
 
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
@@ -3818,6 +3827,10 @@ snapshots:
       minimatch: 9.0.4
       minipass: 7.1.2
       path-scurry: 1.11.1
+
+  global-jsdom@24.0.0(jsdom@24.1.0):
+    dependencies:
+      jsdom: 24.1.0
 
   globby@11.1.0:
     dependencies:

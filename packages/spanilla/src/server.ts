@@ -1,15 +1,12 @@
-import { JSDOM } from "jsdom";
-import { VStyleSheet, isVStyleSheet, render as renderCSS } from "./lib/css";
-import { Component, render as renderHTML } from "./lib/html";
+import "global-jsdom/register";
 
-const dom = new JSDOM();
+import type { VStyleSheet } from "./core/css";
+import { isVStyleSheet } from "./core/css";
+import type { Template } from "./core/html";
+import { render as renderCSS } from "./server/css";
+import { render as renderHTML } from "./server/html";
 
-for (const key in dom) {
-  // @ts-ignore
-  globalThis = dom.window[key];
-}
-
-export function render(value: VStyleSheet | Component | Component[]) {
+export function render(value: Template | VStyleSheet): string {
   if (isVStyleSheet(value)) {
     return renderCSS(value);
   } else {

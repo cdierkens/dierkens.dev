@@ -1,13 +1,8 @@
-import { beforeAll, describe, expect, it } from "vitest";
-import { adopt, css, render } from "./css";
-import { installShim } from "./shim";
+import { describe, expect, it } from "vitest";
+import { css } from "./css";
 import { Signal } from "./signal";
 
 describe("css", () => {
-  beforeAll(async () => {
-    await installShim();
-  });
-
   describe("css tagged template literal", () => {
     it("parses a simple css rule", () => {
       const vStyle = css`
@@ -156,7 +151,7 @@ describe("css", () => {
     });
 
     it("parses a css rule with a signal value", () => {
-      const signal = new Signal("red");
+      const signal = Signal("red");
 
       const vStyle = css`
         h1 {
@@ -184,7 +179,7 @@ describe("css", () => {
     });
 
     it("parses a css rule with a signal value and a priority", () => {
-      const signal = new Signal("red");
+      const signal = Signal("red");
 
       const vStyle = css`
         h1 {
@@ -213,7 +208,7 @@ describe("css", () => {
     });
 
     it("parses a css rule with a signal value and multiple rules", () => {
-      const signal = new Signal("red");
+      const signal = Signal("red");
 
       const vStyle = css`
         h1 {
@@ -246,7 +241,7 @@ describe("css", () => {
     });
 
     it("parses a css rule with a signal value and multiple selectors", () => {
-      const signal = new Signal("red");
+      const signal = Signal("red");
 
       const vStyle = css`
         h1,
@@ -275,8 +270,8 @@ describe("css", () => {
     });
 
     it("parses a css rule with multiple signal values", () => {
-      const signal1 = new Signal("red");
-      const signal2 = new Signal("24px");
+      const signal1 = Signal("red");
+      const signal2 = Signal("24px");
 
       const vStyle = css`
         h1 {
@@ -309,7 +304,7 @@ describe("css", () => {
     });
 
     it("parses a css rule with the signal in the middle of a value", () => {
-      const signal = new Signal("red");
+      const signal = Signal("red");
 
       const vStyle = css`
         h1 {
@@ -334,133 +329,6 @@ describe("css", () => {
         ],
         [Symbol.for("VStylesheet")]: true,
       });
-    });
-  });
-
-  describe("adopt", () => {
-    it("returns a CSSStyleSheet", () => {
-      const vStylesheet = css`
-        h1 {
-          color: red;
-        }
-      `;
-
-      const styleSheet = adopt(vStylesheet);
-
-      expect(styleSheet).toBeInstanceOf(CSSStyleSheet);
-      expect(styleSheet.cssRules.length).toBe(1);
-      expect(styleSheet.cssRules[0].cssText).toBe(
-        `.${vStylesheet.class} h1 { color: red; }`,
-      );
-    });
-
-    it("returns a CSSStyleSheet with multiple rules", () => {
-      const vStyleSheet = css`
-        h1 {
-          color: red;
-        }
-
-        h2 {
-          color: blue;
-        }
-      `;
-
-      const styleSheet = adopt(vStyleSheet);
-
-      expect(styleSheet).toBeInstanceOf(CSSStyleSheet);
-      expect(styleSheet.cssRules.length).toBe(2);
-      expect(styleSheet.cssRules[0].cssText).toBe(
-        `.${vStyleSheet.class} h1 { color: red; }`,
-      );
-      expect(styleSheet.cssRules[1].cssText).toBe(
-        `.${vStyleSheet.class} h2 { color: blue; }`,
-      );
-    });
-
-    it("updates a signal value", () => {
-      const signal = new Signal("red");
-
-      const vStyleSheet = css`
-        h1 {
-          color: ${signal};
-        }
-      `;
-
-      const styleSheet = adopt(vStyleSheet);
-
-      expect(styleSheet.cssRules[0].cssText).toBe(
-        `.${vStyleSheet.class} h1 { color: red; }`,
-      );
-
-      signal.value = "blue";
-
-      expect(styleSheet.cssRules[0].cssText).toBe(
-        `.${vStyleSheet.class} h1 { color: blue; }`,
-      );
-    });
-  });
-
-  describe("render", () => {
-    it("returns a string", () => {
-      const vStyleSheet = css`
-        h1 {
-          color: red;
-        }
-      `;
-
-      const cssText = render(vStyleSheet);
-
-      expect(cssText).toBe(`.${vStyleSheet.class} h1 { color: red; }`);
-    });
-
-    it("returns a string with multiple rules", () => {
-      const vStyleSheet = css`
-        h1 {
-          color: red;
-        }
-
-        h2 {
-          color: blue;
-        }
-      `;
-
-      const cssText = render(vStyleSheet);
-
-      expect(cssText).toBe(
-        `.${vStyleSheet.class} h1 { color: red; } .${vStyleSheet.class} h2 { color: blue; }`,
-      );
-    });
-
-    it("updates a signal value", () => {
-      const signal = new Signal("red");
-
-      const vStyleSheet = css`
-        h1 {
-          color: ${signal};
-        }
-      `;
-
-      const cssText = render(vStyleSheet);
-
-      expect(cssText).toBe(`.${vStyleSheet.class} h1 { color: red; }`);
-    });
-
-    it("renders & styles", () => {
-      const vStyleSheet = css`
-        &:hover {
-          color: red;
-        }
-
-        & {
-          color: blue;
-        }
-      `;
-
-      const cssText = render(vStyleSheet);
-
-      expect(cssText).toBe(
-        `.${vStyleSheet.class}:hover { color: red; } .${vStyleSheet.class} { color: blue; }`,
-      );
     });
   });
 });
