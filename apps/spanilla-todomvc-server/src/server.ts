@@ -9,9 +9,10 @@ const server = fastify();
 server.register(fastifyFormBody);
 server.register(fastifyCookie);
 
-const todos = new Set<Todo>();
+let todos = new Set<Todo>();
 
-server.addHook("onRequest", async (request, _) => {
+server.addHook("onRequest", (request, _, done) => {
+  todos = new Set<Todo>();
   const todosCookie = request.cookies.todos;
   if (todosCookie) {
     const parsedTodos = JSON.parse(todosCookie) as Todo[];
@@ -19,10 +20,14 @@ server.addHook("onRequest", async (request, _) => {
       todos.add(todo);
     }
   }
+
+  done();
 });
 
-server.addHook("onResponse", (_, reply) => {
+server.addHook("onSend", (_, reply, __, done) => {
   reply.setCookie("todos", JSON.stringify([...todos]));
+
+  done();
 });
 
 server.get("/", async (request, reply) => {

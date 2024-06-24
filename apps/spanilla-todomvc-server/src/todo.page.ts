@@ -45,10 +45,19 @@ export function todoPage(
 
       <main class="main">
         <div class="toggle-all-container">
-          <input class="toggle-all" id="toggle-all" type="checkbox" />
-          <label class="toggle-all-label" for="toggle-all"
-            >Mark all as complete</label
-          >
+          <form method="POST">
+            <input type="hidden" name="action" value="complete-all" />
+            <input
+              class="toggle-all"
+              id="toggle-all"
+              type="checkbox"
+              onchange="this.form.submit()"
+              checked="${todos.some((todo) => !todo.completed)}"
+            />
+            <label class="toggle-all-label" for="toggle-all"
+              >Mark all as complete</label
+            >
+          </form>
         </div>
         <ul class="todo-list">
           ${todos.filter(filter).map((todo, index) => {
@@ -67,7 +76,11 @@ export function todoPage(
                     />
                     <label for="todo-${index}">${todo.label}</label>
                   </form>
-                  <button class="destroy"></button>
+                  <form method="POST">
+                    <input type="hidden" name="action" value="delete" />
+                    <input type="hidden" name="id" value="${todo.id}" />
+                    <button type="submit" class="destroy"></button>
+                  </form>
                 </div>
                 <input class="edit" value="${todo.label}" />
               </li>
@@ -93,7 +106,11 @@ export function todoPage(
             `;
           })}
         </ul>
-        <button class="clear-completed">Clear completed</button>
+        <form method="POST">
+          <input type="hidden" name="action" value="clear-completed" />
+
+          <button type="submit" class="clear-completed">Clear completed</button>
+        </form>
       </footer>
     </section>
   `);
