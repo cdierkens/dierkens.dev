@@ -26,6 +26,10 @@ class ___Signal<Value = unknown> {
   }
 
   set value(_value: Value) {
+    if (this._value === _value) {
+      return;
+    }
+
     this._value = _value;
 
     this.handlers.forEach((fn) => fn(_value));

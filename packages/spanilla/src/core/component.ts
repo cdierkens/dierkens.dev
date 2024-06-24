@@ -6,13 +6,17 @@ interface ComponentHooks {
   onCleanup?: () => void;
 }
 
-export class Component<Props = unknown> {
+interface RenderFunction<Props> {
+  (props: Props): Template | null;
+}
+
+export class Component<Props = {}> {
   private node: Node | Node[] | undefined;
   private hooks: ComponentHooks | undefined;
   private props: Props;
-  private render: (props: Props) => Template;
+  private render: RenderFunction<Props>;
 
-  constructor(render: (props: Props) => Template, props?: Props) {
+  constructor(render: RenderFunction<Props>, props?: Props) {
     this.render = render;
     this.props = props || ({} as Props);
 
@@ -41,7 +45,7 @@ export class Component<Props = unknown> {
       ? this.node[0].parentNode
       : this.node.parentNode;
 
-    if (!parentNode) {
+    if (!parentNode || !template) {
       return;
     }
 
@@ -60,6 +64,11 @@ export class Component<Props = unknown> {
 
   public mount(element: Node): Node | Node[] {
     const template = this.render(this.props);
+
+    if (!template) {
+      return element;
+    }
+
     this.node = mount(element, template);
 
     if (this.hooks?.onMount) {
@@ -140,15 +149,17 @@ export class Component<Props = unknown> {
  * html`${Show({ show })}`; // <p>Goodbye, World!</p>
  *
  **/
-export function createComponent(render: () => Template): () => Component;
+export function createComponent(
+  render: RenderFunction<undefined>,
+): () => Component;
 
 export function createComponent<Props>(
-  render: (props: Props) => Template,
+  render: RenderFunction<Props>,
   watch?: [KeysOfType<Props, Signal>],
 ): (props: Props) => Component<Props>;
 
 export function createComponent<Props>(
-  render: (props?: Props) => Template,
+  render: RenderFunction<Props>,
   watch?: [KeysOfType<Props, Signal>],
 ) {
   return function (props: Props) {
@@ -173,5 +184,5 @@ export function createComponent<Props>(
 }
 
 type KeysOfType<T, U> = {
-  [K in keyof T]: T[K] extends U ? K : never;
+  [K in keyof T]: Exclude<T[K], undefined> extends U ? K : never;
 }[keyof T];

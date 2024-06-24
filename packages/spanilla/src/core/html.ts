@@ -42,6 +42,10 @@ function _mount(
 ): Node | Node[] {
   if (typeof node === "string") {
     return element.appendChild(document.createTextNode(node));
+  } else if (typeof node === "number" || typeof node === "boolean") {
+    return element.appendChild(document.createTextNode(String(node)));
+  } else if (node === undefined || node === null) {
+    return element;
   } else if (node instanceof Signal) {
     const textNode = document.createTextNode(String(node.value));
 
@@ -75,8 +79,6 @@ function _mount(
     });
 
     return element.appendChild(textNode);
-  } else if (typeof node === "number" || typeof node === "boolean") {
-    return element.appendChild(document.createTextNode(String(node)));
   } else if (Array.isArray(node)) {
     return node.flatMap((child) => _mount(element, child, root));
   } else if (isVNode(node)) {
