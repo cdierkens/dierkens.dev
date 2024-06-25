@@ -9,16 +9,30 @@ const server = fastify();
 server.register(fastifyFormBody);
 server.register(fastifyCookie);
 
-let todos = new Set<Todo>();
+let todos: Set<Todo>;
 
 server.addHook("onRequest", (request, _, done) => {
-  todos = new Set<Todo>();
   const todosCookie = request.cookies.todos;
   if (todosCookie) {
+    todos = new Set<Todo>();
+
     const parsedTodos = JSON.parse(todosCookie) as Todo[];
     for (const todo of parsedTodos) {
       todos.add(todo);
     }
+  } else {
+    todos = new Set<Todo>([
+      {
+        id: "0",
+        label: "Pay electric bill",
+        completed: false,
+      },
+      {
+        id: "1",
+        label: "Walk the dog",
+        completed: false,
+      },
+    ]);
   }
 
   done();

@@ -35,6 +35,7 @@ export function todoPage(
         <form method="POST">
           <input type="hidden" name="action" value="add" />
           <input
+            data-test="new-todo"
             id="new-todo"
             name="label"
             class="new-todo"
@@ -62,7 +63,7 @@ export function todoPage(
         <ul class="todo-list">
           ${todos.filter(filter).map((todo, index) => {
             return html`
-              <li class="todo-item">
+              <li class="todo-item ${todo.completed ? "completed" : ""}">
                 <div class="view">
                   <form method="POST">
                     <input type="hidden" name="action" value="toggle" />
@@ -106,11 +107,15 @@ export function todoPage(
             `;
           })}
         </ul>
-        <form method="POST">
-          <input type="hidden" name="action" value="clear-completed" />
+        ${todos.some((todo) => todo.completed)
+          ? html`<form method="POST">
+              <input type="hidden" name="action" value="clear-completed" />
 
-          <button type="submit" class="clear-completed">Clear completed</button>
-        </form>
+              <button type="submit" class="clear-completed">
+                Clear completed
+              </button>
+            </form>`
+          : null}
       </footer>
     </section>
   `);
