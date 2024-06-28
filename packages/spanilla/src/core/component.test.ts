@@ -117,14 +117,11 @@ describe("component", () => {
   });
 
   it("renders a Show component", () => {
-    const Show = createComponent(
-      (props: { show: Signal<boolean> }) => {
-        return props.show.value
-          ? html`<p>Hello, World!</p>`
-          : html`<p>Goodbye, World!</p>`;
-      },
-      ["show"],
-    );
+    const Show = createComponent((props: { show: Signal<boolean> }) => {
+      return props.show.value
+        ? html`<p>Hello, World!</p>`
+        : html`<p>Goodbye, World!</p>`;
+    });
 
     const root = document.createElement("div");
     const show = Signal(true);

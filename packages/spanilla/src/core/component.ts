@@ -1,13 +1,17 @@
 import { Template, mount } from "./html";
 import { Signal } from "./signal";
 
-interface ComponentHooks {
+export interface ComponentHooks {
   onMount?: () => void;
   onCleanup?: () => void;
 }
 
 interface RenderFunction<Props> {
-  (props: Props): Template | null;
+  (
+    props: Props,
+    onMount: (fn: () => void) => void,
+    onCleanup: (fn: () => void) => void,
+  ): Template | null;
 }
 
 export class Component<Props = {}> {
@@ -23,6 +27,7 @@ export class Component<Props = {}> {
     return this;
   }
 
+  // TODO: This pattern only allows 1 onMount and 1 onCleanup.
   onMount(fn: () => void) {
     this.hooks = { ...this.hooks, onMount: fn };
     return this;
@@ -35,7 +40,11 @@ export class Component<Props = {}> {
 
   public update(props: Props) {
     this.props = props;
-    const template = this.render(props);
+    const template = this.render(
+      props,
+      (fn) => this.onMount(fn),
+      (fn) => this.onCleanup(fn),
+    );
 
     if (!this.node) {
       return;
@@ -63,7 +72,11 @@ export class Component<Props = {}> {
   }
 
   public mount(element: Node): Node | Node[] {
-    const template = this.render(this.props);
+    const template = this.render(
+      this.props,
+      (fn) => this.onMount(fn),
+      this.onCleanup.bind(this),
+    );
 
     if (!template) {
       return element;
@@ -149,32 +162,32 @@ export class Component<Props = {}> {
  * html`${Show({ show })}`; // <p>Goodbye, World!</p>
  *
  **/
+
 export function createComponent(
   render: RenderFunction<undefined>,
 ): () => Component;
 
 export function createComponent<Props>(
   render: RenderFunction<Props>,
-  watch?: [KeysOfType<Props, Signal>],
 ): (props: Props) => Component<Props>;
 
-export function createComponent<Props>(
-  render: RenderFunction<Props>,
-  watch?: [KeysOfType<Props, Signal>],
-) {
+export function createComponent<Props>(render: RenderFunction<Props>) {
   return function (props: Props) {
     const component = new Component(render, props);
 
-    if (watch) {
-      for (const key of watch) {
-        if (props) {
-          const prop = props[key];
+    if (props) {
+      for (const key in props) {
+        const prop = props[key];
 
-          if (prop instanceof Signal) {
-            prop.subscribe(() => {
-              component.update(props);
-            });
-          }
+        if (prop instanceof Signal) {
+          const update = () => {
+            component.update(props);
+          };
+
+          prop.subscribe(update);
+          component.onCleanup(() => {
+            prop.unsubscribe(update);
+          });
         }
       }
     }
@@ -182,7 +195,3 @@ export function createComponent<Props>(
     return component;
   };
 }
-
-type KeysOfType<T, U> = {
-  [K in keyof T]: Exclude<T[K], undefined> extends U ? K : never;
-}[keyof T];

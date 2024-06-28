@@ -1,5 +1,5 @@
+import { Template } from "../spanilla.js";
 import { createComponent } from "./component.js";
-import { Template } from "./html.js";
 import { Signal } from "./signal.js";
 
 interface Routes {
@@ -104,17 +104,50 @@ type Params = Record<string, string>;
 //   }
 // }
 
+declare global {
+  interface WindowEventMap {
+    route: CustomEvent<{ href: string }>;
+  }
+}
+
+interface RouterProps {
+  routes: Routes;
+  pathname: Signal<string>;
+  fallback?: Template | null;
+}
+
 export const Router = createComponent(
-  ({
-    routes,
-    pathname = Signal(window.location.pathname),
-  }: {
-    routes: Routes;
-    pathname?: Signal<string>;
-  }) => {
-    // Listen for back/forward navigation
-    window.addEventListener("popstate", () => {
+  (
+    {
+      routes,
+      pathname = Signal(window.location.pathname),
+      fallback = null,
+    }: RouterProps,
+    onMount,
+    onCleanup,
+  ) => {
+    const onPopState = () => {
       pathname.value = window.location.pathname;
+    };
+
+    const onRoute = (event: WindowEventMap["route"]) => {
+      const href = event.detail.href;
+      pathname.value = href;
+    };
+
+    onMount(() => {
+      // TODO: Tests to ensure amount of listeners.
+      window.addEventListener("popstate", onPopState);
+
+      // TODO: Tests to ensure amount of listeners.
+      window.addEventListener("route", onRoute);
+    });
+
+    onCleanup(() => {
+      console.log("CLEANING UP ROUTER");
+
+      window.removeEventListener("popstate", onPopState);
+      window.removeEventListener("route", onRoute);
     });
 
     const key = Object.keys(routes).find((key) => {
@@ -135,7 +168,7 @@ export const Router = createComponent(
     });
 
     if (!key) {
-      return null;
+      return fallback;
     }
 
     const route = routes[key];
@@ -161,5 +194,4 @@ export const Router = createComponent(
       return route;
     }
   },
-  ["pathname"],
 );

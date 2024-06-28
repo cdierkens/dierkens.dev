@@ -30,7 +30,30 @@ export const html: (
   ...values: any[]
 ) => Template = htm.bind(h);
 
-export function mount(element: Node, template: Template): Node | Node[] {
+interface MountOptions {
+  replace?: boolean;
+}
+
+export function mount(
+  element: Node,
+  template: Template,
+  { replace }: MountOptions = {
+    replace: false,
+  },
+): Node | Node[] {
+  // TODO: Should only add 1 event listener, not 1 per mount.
+  element.addEventListener("route", (event) => {
+    const href = (event as CustomEvent).detail.href;
+
+    if (href) {
+      window.history.pushState({}, "", href);
+    }
+  });
+
+  if (replace) {
+    element.textContent = "";
+  }
+
   return _mount(element, template);
 }
 
@@ -38,7 +61,6 @@ export function mount(element: Node, template: Template): Node | Node[] {
 function _mount(
   element: Node,
   node: boolean | number | Signal | string | Template | (() => Template),
-  root: Node = element,
 ): Node | Node[] {
   if (typeof node === "string") {
     return element.appendChild(document.createTextNode(node));
@@ -80,7 +102,7 @@ function _mount(
 
     return element.appendChild(textNode);
   } else if (Array.isArray(node)) {
-    return node.flatMap((child) => _mount(element, child, root));
+    return node.flatMap((child) => _mount(element, child));
   } else if (isVNode(node)) {
     const el = document.createElement(node.type);
 
@@ -114,13 +136,15 @@ function _mount(
 
         if (href && url.origin === window.location.origin) {
           event.preventDefault();
-          root.dispatchEvent(new CustomEvent("route", { detail: { href } }));
+          el.dispatchEvent(
+            new CustomEvent("route", { detail: { href }, bubbles: true }),
+          );
         }
       });
     }
 
     for (const child of node.children) {
-      _mount(el, child, root);
+      _mount(el, child);
     }
 
     return element.appendChild(el);

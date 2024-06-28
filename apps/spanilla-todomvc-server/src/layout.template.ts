@@ -17,6 +17,19 @@ export function layout(template: Template, styleSheets: VStyleSheet[] = []) {
         <style>
           ${styleSheets.map((styleSheet) => render(styleSheet)).join(" ")}
         </style>
+
+        <script type="module">
+          import TodoPage, { mount } from "./public/todo.page.js";
+
+          const data = await fetch(window.location.pathname, {
+            headers: {
+              Accept: "application/json",
+            },
+          }).then((response) => response.json());
+
+          // TODO: Make page selection dynamic.
+          mount(app, TodoPage(data), { replace: true });
+        </script>
       </head>
       <body id="app">
         ${template}

@@ -1,27 +1,55 @@
 import { render } from "@dierkens.dev/spanilla/server";
+
+import { Signal } from "@dierkens.dev/spanilla";
 import fastifyCookie from "@fastify/cookie";
 import fastifyFormBody from "@fastify/formbody";
+import fastifyStatic from "@fastify/static";
+import * as esbuild from "esbuild";
 import fastify from "fastify";
-import { Todo, todoPage } from "./todo.page";
+import path from "path";
+import {
+  addTodo,
+  clearCompleted,
+  completeAll,
+  deleteTodo,
+  getTodos,
+  setTodos,
+  toggleCompleted,
+} from "./database";
+import { layout } from "./layout.template";
+import TodoPage, { Todo, data } from "./todo.page";
+
+await esbuild.build({
+  entryPoints: [path.resolve(import.meta.dirname, "..", "src", "todo.page.ts")],
+  bundle: true,
+  minify: true,
+  platform: "neutral",
+  outdir: "dist/public",
+});
 
 const server = fastify();
 
 server.register(fastifyFormBody);
 server.register(fastifyCookie);
-
-let todos: Set<Todo>;
+server.register(fastifyStatic, {
+  root: path.resolve(import.meta.dirname, "public"),
+  prefix: "/public",
+});
 
 server.addHook("onRequest", (request, _, done) => {
   const todosCookie = request.cookies.todos;
+  let todos: Todo[];
   if (todosCookie) {
-    todos = new Set<Todo>();
+    todos = [];
 
     const parsedTodos = JSON.parse(todosCookie) as Todo[];
     for (const todo of parsedTodos) {
-      todos.add(todo);
+      todos.push(todo);
     }
+
+    setTodos(todos);
   } else {
-    todos = new Set<Todo>([
+    setTodos([
       {
         id: "0",
         label: "Pay electric bill",
@@ -39,27 +67,48 @@ server.addHook("onRequest", (request, _, done) => {
 });
 
 server.addHook("onSend", (_, reply, __, done) => {
-  reply.setCookie("todos", JSON.stringify([...todos]));
+  const todos = getTodos();
+
+  reply.setCookie("todos", JSON.stringify(todos));
 
   done();
 });
 
-server.get("/", async (request, reply) => {
-  reply.type("text/html");
+server.get("*", async (request, reply) => {
+  if (request.headers.accept?.includes("application/json")) {
+    return data(request);
+  }
 
-  return render(todoPage([...todos], () => true, request.url));
+  reply.type("text/html");
+  return render(layout(TodoPage(data(request), { url: Signal(request.url) })));
 });
 
-server.get("/completed", async (request, reply) => {
+server.post("*", async (request, reply) => {
   reply.type("text/html");
 
-  return render(todoPage([...todos], (todo) => todo.completed, request.url));
+  const action = request.body as Action;
+
+  if (action.action === "add") {
+    addTodo(action.label);
+  } else if (action.action === "toggle") {
+    toggleCompleted(action.id);
+  } else if (action.action === "complete-all") {
+    completeAll();
+  } else if (action.action === "delete") {
+    deleteTodo(action.id);
+  } else if (action.action === "clear-completed") {
+    clearCompleted();
+  }
+
+  reply.redirect(request.url);
 });
 
-server.get("/active", async (request, reply) => {
-  reply.type("text/html");
-
-  return render(todoPage([...todos], (todo) => !todo.completed, request.url));
+server.listen({ port: 8080 }, (err, address) => {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  console.log(`Server listening at ${address}`);
 });
 
 type AddAction = {
@@ -91,49 +140,3 @@ type Action =
   | CompleteAllAction
   | DeleteAction
   | ClearCompletedAction;
-
-server.post("*", async (request, reply) => {
-  reply.type("text/html");
-
-  const action = request.body as Action;
-
-  if (action.action === "add") {
-    todos.add({
-      id: String(todos.size),
-      label: action.label,
-      completed: false,
-    });
-  } else if (action.action === "toggle") {
-    for (const todo of todos) {
-      if (todo.id === action.id) {
-        todo.completed = !todo.completed;
-      }
-    }
-  } else if (action.action === "complete-all") {
-    for (const todo of todos) {
-      todo.completed = true;
-    }
-  } else if (action.action === "delete") {
-    for (const todo of todos) {
-      if (todo.id === action.id) {
-        todos.delete(todo);
-      }
-    }
-  } else if (action.action === "clear-completed") {
-    for (const todo of todos) {
-      if (todo.completed) {
-        todos.delete(todo);
-      }
-    }
-  }
-
-  reply.redirect(request.url);
-});
-
-server.listen({ port: 8080 }, (err, address) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
-  console.log(`Server listening at ${address}`);
-});

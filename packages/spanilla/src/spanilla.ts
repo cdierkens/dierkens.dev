@@ -1,3 +1,4 @@
+export { createComponent } from "./core/component";
 export { css } from "./core/css";
 export type { VStyleSheet } from "./core/css";
 export { html, mount } from "./core/html";

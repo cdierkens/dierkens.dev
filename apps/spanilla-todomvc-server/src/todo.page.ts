@@ -1,5 +1,6 @@
-import { html } from "@dierkens.dev/spanilla";
-import { layout } from "./layout.template";
+import { Router, Signal, createComponent, html } from "@dierkens.dev/spanilla";
+import { FastifyRequest } from "fastify";
+import { getTodos } from "./database";
 
 export interface Todo {
   id: string;
@@ -7,33 +8,56 @@ export interface Todo {
   completed: boolean;
 }
 
-const links = [
-  {
-    label: "All",
-    href: "/",
-  },
-  {
-    label: "Active",
-    href: "/active",
-  },
-  {
-    label: "Completed",
-    href: "/completed",
-  },
-];
+export { mount } from "@dierkens.dev/spanilla";
 
-export function todoPage(
-  todos: Todo[],
-  filter: (todo: Todo) => boolean,
-  url: string,
-) {
-  return layout(html`
+export function data(request: FastifyRequest) {
+  const todos = getTodos();
+
+  if (request.url === "/active") {
+    return {
+      todos,
+      filteredTodos: todos.filter((todo) => !todo.completed),
+    };
+  }
+
+  if (request.url === "/completed") {
+    return {
+      todos,
+      filteredTodos: todos.filter((todo) => todo.completed),
+      url: request.url,
+    };
+  }
+
+  return {
+    todos,
+    filteredTodos: todos,
+  };
+}
+
+export default function TodoPage({ todos }: ReturnType<typeof data>) {
+  const links = [
+    {
+      label: "All",
+      href: "/",
+    },
+    {
+      label: "Active",
+      href: "/active",
+    },
+    {
+      label: "Completed",
+      href: "/completed",
+    },
+  ];
+
+  return html`
     <section class="todoapp">
       <header class="header">
         <h1 class="todo">todos</h1>
 
         <form method="POST">
           <input type="hidden" name="action" value="add" />
+
           <input
             data-test="new-todo"
             id="new-todo"
@@ -48,6 +72,7 @@ export function todoPage(
         <div class="toggle-all-container">
           <form method="POST">
             <input type="hidden" name="action" value="complete-all" />
+
             <input
               class="toggle-all"
               id="toggle-all"
@@ -55,58 +80,33 @@ export function todoPage(
               onchange="this.form.submit()"
               checked="${todos.some((todo) => !todo.completed)}"
             />
+
             <label class="toggle-all-label" for="toggle-all"
               >Mark all as complete</label
             >
           </form>
         </div>
-        <ul class="todo-list">
-          ${todos.filter(filter).map((todo, index) => {
-            return html`
-              <li class="todo-item ${todo.completed ? "completed" : ""}">
-                <div class="view">
-                  <form method="POST">
-                    <input type="hidden" name="action" value="toggle" />
-                    <input type="hidden" name="id" value="${todo.id}" />
-                    <input
-                      class="toggle"
-                      id="todo-${index}"
-                      type="checkbox"
-                      checked="${todo.completed}"
-                      onchange="this.form.submit()"
-                    />
-                    <label for="todo-${index}">${todo.label}</label>
-                  </form>
-                  <form method="POST">
-                    <input type="hidden" name="action" value="delete" />
-                    <input type="hidden" name="id" value="${todo.id}" />
-                    <button type="submit" class="destroy"></button>
-                  </form>
-                </div>
-                <input class="edit" value="${todo.label}" />
-              </li>
-            `;
-          })}
-        </ul>
+
+        ${TodoListRouter({ todos })}
       </main>
 
       <footer class="footer">
         <span class="todo-count">
           ${todos.filter((todo) => !todo.completed).length} items left
         </span>
+
         <ul class="filters">
           ${links.map((link) => {
-            return html`
-              <li>
-                <a
-                  href="${link.href}"
-                  class="${url === link.href ? "selected" : ""}"
-                  >${link.label}</a
-                >
-              </li>
-            `;
+            return Router({
+              fallback: html`${Link(link)}`,
+              routes: {
+                [link.href]: () => html`${Link({ ...link, selected: true })}`,
+              },
+              pathname: Signal(window.location.pathname),
+            });
           })}
         </ul>
+
         ${todos.some((todo) => todo.completed)
           ? html`<form method="POST">
               <input type="hidden" name="action" value="clear-completed" />
@@ -118,5 +118,76 @@ export function todoPage(
           : null}
       </footer>
     </section>
-  `);
+  `;
 }
+
+const TodoListRouter = createComponent(({ todos }: { todos: Todo[] }) => {
+  return html`${Router({
+    routes: {
+      "/": () => TodoList({ todos }),
+      "/active": () =>
+        TodoList({ todos: todos.filter((todo) => !todo.completed) }),
+      "/completed": () =>
+        TodoList({ todos: todos.filter((todo) => todo.completed) }),
+    },
+    pathname: Signal(window.location.pathname),
+  })}`;
+});
+
+const TodoList = ({ todos }: { todos: Todo[] }) => {
+  return html`
+    <ul class="todo-list">
+      ${todos.map((todo, index) => {
+        return html`
+          <li class="todo-item ${todo.completed ? "completed" : ""}">
+            <div class="view">
+              <form method="POST">
+                <input type="hidden" name="action" value="toggle" />
+
+                <input type="hidden" name="id" value="${todo.id}" />
+
+                <input
+                  class="toggle"
+                  id="todo-${index}"
+                  type="checkbox"
+                  checked="${todo.completed}"
+                  onchange="this.form.submit()"
+                />
+
+                <label for="todo-${index}">${todo.label}</label>
+              </form>
+
+              <form method="POST">
+                <input type="hidden" name="action" value="delete" />
+
+                <input type="hidden" name="id" value="${todo.id}" />
+
+                <button type="submit" class="destroy"></button>
+              </form>
+            </div>
+
+            <input class="edit" value="${todo.label}" />
+          </li>
+        `;
+      })}
+    </ul>
+  `;
+};
+
+const Link = createComponent(
+  ({
+    href,
+    label,
+    selected,
+  }: {
+    href: string;
+    label: string;
+    selected?: boolean;
+  }) => {
+    return html`
+      <li>
+        <a href="${href}" class="${selected ? "selected" : ""}">${label}</a>
+      </li>
+    `;
+  },
+);
