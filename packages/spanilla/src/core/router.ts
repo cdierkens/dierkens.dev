@@ -13,124 +13,47 @@ interface Routes {
 
 type Params = Record<string, string>;
 
-// export class Router implements Mountable {
-//   public pathname: Signal<string>;
-//   private node: Node | undefined;
-//   private parentNode: Node | undefined;
-
-//   constructor(private routes: Routes) {
-//     pathname = new Signal(window.location.pathname);
-
-//     // Listen for back/forward navigation
-//     window.addEventListener("popstate", () => {
-//       pathname.value = window.location.pathname;
-//     });
-
-//     pathname.subscribe((value) => this.update(value));
-
-//     setTimeout(() => {
-//       pathname.value = window.location.pathname;
-//     });
-//   }
-
-//   // TODO: This could be in an abstract class.
-//   mount(element: Node) {
-//     this.parentNode = element;
-//     this.node = element.appendChild(document.createTextNode(""));
-
-//     this.update(pathname.value);
-
-//     return this.node;
-//   }
-
-//   update(pathname: string) {
-//     if (!this.parentNode) {
-//       return;
-//     }
-
-//     const key = Object.keys(this.routes).find((key) => {
-//       const parts = key.split("/");
-//       const pathnameParts = pathname.split("/");
-
-//       if (parts.length !== pathnameParts.length) {
-//         return false;
-//       }
-
-//       return parts.every((part, index) => {
-//         if (part.startsWith("{{") && part.endsWith("}}")) {
-//           return true;
-//         }
-
-//         return part === pathnameParts[index];
-//       });
-//     });
-
-//     const route = key ? this.routes[key] : undefined;
-
-//     if (!route || !key) {
-//       const newNode = document.createTextNode("");
-//       this.parentNode.replaceChild(newNode, this.node as Node);
-//       this.node = newNode;
-//       return;
-//     }
-
-//     let vNode: VNode | VNode[];
-//     if (route instanceof Function) {
-//       const values = pathname.split("/");
-//       const keys = key.split("/");
-//       const urlParams = values.reduce((acc: Params, value, index) => {
-//         const key = keys[index];
-//         const name = key.match(/^{{(.*?)}}?/);
-
-//         if (name) {
-//           acc[name[1]] = value;
-//         }
-
-//         return acc;
-//       }, {});
-
-//       vNode = route({
-//         urlParams,
-//         searchParams: new URLSearchParams(window.location.search),
-//       });
-//     } else {
-//       vNode = route;
-//     }
-
-//     // TODO: This is repeated from Conditional.
-//     const newNode = mount(document.createElement("span"), vNode) as Node;
-//     this.parentNode.replaceChild(newNode, this.node as Node);
-//     this.node = newNode;
-//   }
-// }
-
 declare global {
-  interface WindowEventMap {
-    route: CustomEvent<{ href: string }>;
+  interface EventTarget {
+    addEventListener(
+      type: "route",
+      callback: (evt: CustomEvent<{ href: string }>) => void | null,
+      options?: AddEventListenerOptions | boolean,
+    ): void;
+
+    dispatchEvent(event: CustomEvent<{ href: string }>): boolean;
+
+    removeEventListener(
+      type: "route",
+      callback: (evt: CustomEvent<{ href: string }>) => void | null,
+      options?: EventListenerOptions | boolean,
+    ): void;
   }
 }
 
 interface RouterProps {
   routes: Routes;
-  pathname: Signal<string>;
+  pathname?: Signal<string>;
   fallback?: Template | null;
 }
 
 export const Router = createComponent(
-  (
-    {
-      routes,
-      pathname = Signal(window.location.pathname),
-      fallback = null,
-    }: RouterProps,
-    onMount,
-    onCleanup,
-  ) => {
+  ({ routes, pathname, fallback }: RouterProps, onMount, onCleanup, root) => {
+    // TODO: Invariants. These are optional in the runtime, but required in the
+    // initialProps.
+    if (!pathname) {
+      throw new Error("pathname is required");
+    }
+
+    if (!fallback && fallback !== null) {
+      throw new Error("fallback is required");
+    }
+
     const onPopState = () => {
       pathname.value = window.location.pathname;
     };
 
-    const onRoute = (event: WindowEventMap["route"]) => {
+    const onRoute = (event: CustomEvent<{ href: string }>) => {
       const href = event.detail.href;
       pathname.value = href;
     };
@@ -140,14 +63,12 @@ export const Router = createComponent(
       window.addEventListener("popstate", onPopState);
 
       // TODO: Tests to ensure amount of listeners.
-      window.addEventListener("route", onRoute);
+      root.addEventListener("route", onRoute);
     });
 
     onCleanup(() => {
-      console.log("CLEANING UP ROUTER");
-
       window.removeEventListener("popstate", onPopState);
-      window.removeEventListener("route", onRoute);
+      root.removeEventListener("route", onRoute);
     });
 
     const key = Object.keys(routes).find((key) => {
@@ -193,5 +114,11 @@ export const Router = createComponent(
     } else {
       return route;
     }
+  },
+  {
+    initialProps: {
+      pathname: Signal(window.location.pathname),
+      fallback: null,
+    },
   },
 );

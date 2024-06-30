@@ -1,4 +1,4 @@
-import { Template, mount } from "./html";
+import { Template, _mount } from "./html";
 import { Signal } from "./signal";
 
 export interface ComponentHooks {
@@ -11,18 +11,43 @@ interface RenderFunction<Props> {
     props: Props,
     onMount: (fn: () => void) => void,
     onCleanup: (fn: () => void) => void,
+    root: Node,
   ): Template | null;
 }
 
 export class Component<Props = {}> {
+  private _root: Node | undefined;
   private node: Node | Node[] | undefined;
   private hooks: ComponentHooks | undefined;
   private props: Props;
   private render: RenderFunction<Props>;
 
+  private onMountCallbacks: (() => void)[] = [];
+  private onCleanupCallbacks: (() => void)[] = [];
+
+  get root() {
+    return this._root;
+  }
+
   constructor(render: RenderFunction<Props>, props?: Props) {
     this.render = render;
     this.props = props || ({} as Props);
+
+    for (const key in props) {
+      const prop = props[key];
+
+      if (prop instanceof Signal) {
+        const update = () => {
+          this.update(this.props);
+        };
+
+        prop.subscribe(update);
+
+        this.onCleanup(() => {
+          prop.unsubscribe(update);
+        });
+      }
+    }
 
     return this;
   }
@@ -44,6 +69,7 @@ export class Component<Props = {}> {
       props,
       (fn) => this.onMount(fn),
       (fn) => this.onCleanup(fn),
+      this.root!,
     );
 
     if (!this.node) {
@@ -58,7 +84,7 @@ export class Component<Props = {}> {
       return;
     }
 
-    const nodes = mount(document.createElement("span"), template);
+    const nodes = _mount(document.createElement("span"), template, this._root);
     if (Array.isArray(nodes)) {
       parentNode.replaceChildren(...nodes);
       this.node = nodes;
@@ -71,127 +97,63 @@ export class Component<Props = {}> {
     }
   }
 
-  public mount(element: Node): Node | Node[] {
+  public mount(element: Node, root: Node): Node | Node[] {
     const template = this.render(
       this.props,
       (fn) => this.onMount(fn),
-      this.onCleanup.bind(this),
+      (fn) => this.onCleanup(fn),
+      root,
     );
 
     if (!template) {
       return element;
     }
 
-    this.node = mount(element, template);
+    this._root = root;
+    this.node = _mount(element, template, root);
 
+    this.onMountCallbacks.forEach((fn) => fn());
     if (this.hooks?.onMount) {
       this.hooks.onMount();
     }
 
-    if (this.hooks?.onCleanup) {
-      const onCleanup = this.hooks?.onCleanup;
-      new MutationObserver((record) => {
-        record.forEach((mutation) => {
-          mutation.removedNodes.forEach((removedNode) => {
-            if (removedNode === this.node) {
-              onCleanup();
+    new MutationObserver((record) => {
+      record.forEach((mutation) => {
+        mutation.removedNodes.forEach((removedNode) => {
+          if (removedNode === this.node) {
+            if (this.hooks?.onCleanup) {
+              this.hooks.onCleanup();
             }
-          });
+            this.onCleanupCallbacks.forEach((fn) => fn());
+
+            this.onCleanupCallbacks = [];
+            this.onMountCallbacks = [];
+          }
         });
-      }).observe(element, {
-        childList: true,
       });
-    }
+    }).observe(element, {
+      childList: true,
+    });
 
     return this.node;
   }
 }
 
-/**
- * Creates a component.
- *
- * @param {function} render - The render function. This function should return a template.
- * It also defines what props the component accepts.
- * @param {['key', ...]} watch - An array of prop keys whose values are signals to watch for
- * changes. If the matching signal changes, the component will re-render.
- * @returns A component function which accepts props, and component lifecycle
- * hooks.
- *
- * @example
- * const Counter = createComponent(({count, children}: CounterProps) => {
- * 	function incrementCount() {
- * 		count.value++
- * 	}
- *
- * 	return html`
- * 		<p>The count is ${count}</p>
- * 		<button onclick="${incrementCount}">
- * 			${children}
- * 		</button>
- * 	`
- * })
- *
- * html`
- * 	<div>
- * 		${Counter({
- * 			children: html`Increment the count!`,
- * 			count: createSignal(0)
- * 		}, {
- * 			onMount: () => console.log('on mount'),
- * 			onCleanup: () => console.log('on cleanup')
- * 		})}
- * 	</div>
- * `
- *
- * @example
- * const Show = createComponent(
- *     (props: { show: Signal<boolean> }) => {
- *       return props.show.value
- *         ? html`<p>Hello, World!</p>`
- *         : html`<p>Goodbye, World!</p>`;
- *     },
- *     ["show"],
- *   );
- *
- * const show = Signal(true);
- *
- * html`${Show({ show })}`; // <p>Hello, World!</p>
- *
- * show.value = false;
- *
- * html`${Show({ show })}`; // <p>Goodbye, World!</p>
- *
- **/
-
 export function createComponent(
   render: RenderFunction<undefined>,
+  options?: { initialProps: {} },
 ): () => Component;
 
 export function createComponent<Props>(
   render: RenderFunction<Props>,
+  options?: { initialProps: Partial<Props> },
 ): (props: Props) => Component<Props>;
 
-export function createComponent<Props>(render: RenderFunction<Props>) {
+export function createComponent<Props>(
+  render: RenderFunction<Props>,
+  { initialProps }: { initialProps: Partial<Props> } = { initialProps: {} },
+): (props: Props) => Component<Props> {
   return function (props: Props) {
-    const component = new Component(render, props);
-
-    if (props) {
-      for (const key in props) {
-        const prop = props[key];
-
-        if (prop instanceof Signal) {
-          const update = () => {
-            component.update(props);
-          };
-
-          prop.subscribe(update);
-          component.onCleanup(() => {
-            prop.unsubscribe(update);
-          });
-        }
-      }
-    }
-
-    return component;
+    return new Component(render, { ...initialProps, ...props });
   };
 }

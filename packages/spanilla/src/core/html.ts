@@ -43,7 +43,7 @@ export function mount(
 ): Node | Node[] {
   // TODO: Should only add 1 event listener, not 1 per mount.
   element.addEventListener("route", (event) => {
-    const href = (event as CustomEvent).detail.href;
+    const href = event.detail.href;
 
     if (href) {
       window.history.pushState({}, "", href);
@@ -58,9 +58,10 @@ export function mount(
 }
 
 // TODO: No recursion.
-function _mount(
+export function _mount(
   element: Node,
   node: boolean | number | Signal | string | Template | (() => Template),
+  root: Node = element,
 ): Node | Node[] {
   if (typeof node === "string") {
     return element.appendChild(document.createTextNode(node));
@@ -102,7 +103,7 @@ function _mount(
 
     return element.appendChild(textNode);
   } else if (Array.isArray(node)) {
-    return node.flatMap((child) => _mount(element, child));
+    return node.flatMap((child) => _mount(element, child, root));
   } else if (isVNode(node)) {
     const el = document.createElement(node.type);
 
@@ -136,23 +137,21 @@ function _mount(
 
         if (href && url.origin === window.location.origin) {
           event.preventDefault();
-          el.dispatchEvent(
-            new CustomEvent("route", { detail: { href }, bubbles: true }),
-          );
+          root.dispatchEvent(new CustomEvent("route", { detail: { href } }));
         }
       });
     }
 
     for (const child of node.children) {
-      _mount(el, child);
+      _mount(el, child, root);
     }
 
     return element.appendChild(el);
   } else if (node instanceof Component) {
-    return node.mount(element);
+    return node.mount(element, root);
   } else if (typeof node === "function") {
     const component = createComponent(node);
-    return component().mount(element);
+    return component().mount(element, root);
   } else {
     const textNode = document.createTextNode(String(node));
 

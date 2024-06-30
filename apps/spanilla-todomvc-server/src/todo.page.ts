@@ -1,4 +1,4 @@
-import { Router, Signal, createComponent, html } from "@dierkens.dev/spanilla";
+import { Router, createComponent, html } from "@dierkens.dev/spanilla";
 import { FastifyRequest } from "fastify";
 import { getTodos } from "./database";
 
@@ -102,7 +102,6 @@ export default function TodoPage({ todos }: ReturnType<typeof data>) {
               routes: {
                 [link.href]: () => html`${Link({ ...link, selected: true })}`,
               },
-              pathname: Signal(window.location.pathname),
             });
           })}
         </ul>
@@ -130,7 +129,6 @@ const TodoListRouter = createComponent(({ todos }: { todos: Todo[] }) => {
       "/completed": () =>
         TodoList({ todos: todos.filter((todo) => todo.completed) }),
     },
-    pathname: Signal(window.location.pathname),
   })}`;
 });
 

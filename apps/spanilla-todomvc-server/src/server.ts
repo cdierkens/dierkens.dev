@@ -1,9 +1,7 @@
 import { render } from "@dierkens.dev/spanilla/server";
 
-import { Signal } from "@dierkens.dev/spanilla";
 import fastifyCookie from "@fastify/cookie";
 import fastifyFormBody from "@fastify/formbody";
-import fastifyStatic from "@fastify/static";
 import * as esbuild from "esbuild";
 import fastify from "fastify";
 import path from "path";
@@ -19,22 +17,19 @@ import {
 import { layout } from "./layout.template";
 import TodoPage, { Todo, data } from "./todo.page";
 
-await esbuild.build({
+const result = await esbuild.build({
   entryPoints: [path.resolve(import.meta.dirname, "..", "src", "todo.page.ts")],
   bundle: true,
   minify: true,
+  write: false,
+  outdir: "runtime",
   platform: "neutral",
-  outdir: "dist/public",
 });
 
 const server = fastify();
 
 server.register(fastifyFormBody);
 server.register(fastifyCookie);
-server.register(fastifyStatic, {
-  root: path.resolve(import.meta.dirname, "public"),
-  prefix: "/public",
-});
 
 server.addHook("onRequest", (request, _, done) => {
   const todosCookie = request.cookies.todos;
@@ -74,13 +69,28 @@ server.addHook("onSend", (_, reply, __, done) => {
   done();
 });
 
+server.get("/runtime/*", async (request, reply) => {
+  const file = result.outputFiles.find((value) =>
+    value.path.endsWith("todo.page.js"),
+  );
+
+  if (!file) {
+    reply.status(404);
+    return;
+  }
+
+  reply.type("application/javascript");
+  reply.send(file.contents);
+});
+
 server.get("*", async (request, reply) => {
   if (request.headers.accept?.includes("application/json")) {
     return data(request);
   }
 
   reply.type("text/html");
-  return render(layout(TodoPage(data(request), { url: Signal(request.url) })));
+
+  return render(layout(TodoPage(data(request))));
 });
 
 server.post("*", async (request, reply) => {
