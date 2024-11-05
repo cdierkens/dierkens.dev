@@ -1,22 +1,24 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "./FormattedDate.astro";
+import { isPublishedBlog } from "./blog.lib";
 
 type Props = {
-  posts: CollectionEntry<"blog">[];
+  blogs: CollectionEntry<"blog">[];
 };
 
-const { posts } = Astro.props;
+const now = new Date();
+const blogs = Astro.props.blogs.filter((blog) => isPublishedBlog(blog, now));
 ---
 
 <ol>
   {
-    posts.map((post) => (
+    blogs.map((blog) => (
       <li>
-        <a href={`/blog/${post.slug}/`}>
-          <h3 class="mb-0">{post.data.title}</h3>
+        <a href={`/blog/${blog.slug}/`}>
+          <h3 class="mb-0">{blog.data.title}</h3>
           <p class="mt-0">
-            <FormattedDate date={post.data.pubDate} />
+            <FormattedDate date={blog.data.published} />
           </p>
         </a>
       </li>

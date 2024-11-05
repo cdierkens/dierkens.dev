@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
+import { isPublishedBlog } from "../components/blog.lib";
 import BlogList from "../components/BlogList.astro";
 import Body from "../components/Body.astro";
 import Footer from "../components/Footer.astro";
@@ -11,9 +12,11 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 const years = new Date().getFullYear() - new Date("2017-05-01").getFullYear();
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+const collection = await getCollection("blog");
+const now = new Date();
+const blogs = collection
+  .filter((blog) => isPublishedBlog(blog, now))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 ---
 
 <!doctype html>
@@ -36,7 +39,7 @@ const posts = (await getCollection("blog")).sort(
       <section>
         <section>
           <h2>Blog</h2>
-          <BlogList posts={posts} />
+          <BlogList blogs={blogs} />
         </section>
       </section>
     </Main>

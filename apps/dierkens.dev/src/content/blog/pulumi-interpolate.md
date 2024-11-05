@@ -1,16 +1,17 @@
 ---
 title: "Pulumi in Python: Translating Interpolation"
 description: Pulumi is a powerful tool for managing infrastructure as code, and its flexibility across different languages makes it a popular choice among developers. While Pulumi's TypeScript syntax offers a clean and convenient way to handle Outputs and Inputs`, translating these features to Python can be challenging. This article explores the nuances of using `pulumi.interpolate` in TypeScript and how to achieve similar functionality in Python.
-pubDate: 2024-07-17
-heroImage: /blog-placeholder-3.jpg
+published: 2024-07-17
+hero: /blog-placeholder-3.jpg
 created: 2024-11-04T10:36
-updated: 2024-11-05T12:37
+updated: 2024-11-05T15:08
 tags:
   - pulumi
   - iac
   - python
   - TypeScript
   - JavaScript
+id: 01JBYZ3NX69PS0KJMQDNVB3AMS
 ---
 
 # Pulumi in Python: Translating Interpolation
