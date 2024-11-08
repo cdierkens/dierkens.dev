@@ -1,8 +1,8 @@
 ---
-
+const { class: className } = Astro.props;
 ---
 
-<div class="flex justify-center gap-4 mt-4">
+<div class:list={["flex justify-center gap-4 mt-4", className]}>
   <a
     class="text-gray-900 hover:text-gray-700"
     href="https://bsky.app/profile/dierkens.dev"

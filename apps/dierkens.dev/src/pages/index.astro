@@ -8,6 +8,7 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import Html from "../components/Html.astro";
 import Main from "../components/Main.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 const years = new Date().getFullYear() - new Date("2017-05-01").getFullYear();
@@ -16,7 +17,8 @@ const collection = await getCollection("blog");
 const now = new Date();
 const blogs = collection
   .filter((blog) => isPublishedBlog(blog, now))
-  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
+  .slice(0);
 ---
 
 <!doctype html>
@@ -30,16 +32,23 @@ const blogs = collection
       <header>
         <h1>👋 I'm Chris</h1>
         <p>
-          I'm a software engeneer with over {years} years experience in senior roles.
+          I'm a software engineer with over 15 years of experience, more than {
+            years
+          } years in senior roles.
         </p>
       </header>
+      <hr />
 
+      <h2>Socials</h2>
+      <SocialLinks />
       <hr />
 
       <section>
         <section>
-          <h2>Blog</h2>
+          <h2>Recent Blog Posts</h2>
           <BlogList blogs={blogs} />
+
+          <p>Read more on my <a href="/blog">blog.</a></p>
         </section>
       </section>
     </Main>
