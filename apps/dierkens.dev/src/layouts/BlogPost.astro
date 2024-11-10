@@ -13,9 +13,12 @@ type Props = Pick<
   PublishedBlog["data"],
   "title" | "description" | "published" | "hero"
 > &
-  Partial<Pick<PublishedBlog["data"], "updated">>;
+  Partial<Pick<PublishedBlog["data"], "updated">> & {
+    readingTime?: string;
+  };
 
-const { title, description, published, hero, updated } = Astro.props;
+const { title, description, published, hero, updated, readingTime } =
+  Astro.props;
 ---
 
 <!doctype html>
@@ -40,17 +43,22 @@ const { title, description, published, hero, updated } = Astro.props;
 
         <div>
           <div>
-            <div>
-              <FormattedDate date={published} />
-              {
-                updated && (
-                  <div>
-                    Last updated on <FormattedDate date={updated} />
-                  </div>
-                )
-              }
-            </div>
             <h1>{title}</h1>
+
+            <p class="flex justify-between mb-2">
+              <span>
+                Published on <FormattedDate date={published} />
+                {
+                  updated && (
+                    <span>
+                      - Updated on
+                      <FormattedDate date={updated} />
+                    </span>
+                  )
+                }
+              </span>
+              {readingTime && <span>{readingTime}</span>}
+            </p>
             <hr />
           </div>
           <slot />

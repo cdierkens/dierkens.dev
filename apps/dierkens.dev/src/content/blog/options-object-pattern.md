@@ -1,10 +1,11 @@
 ---
 created: 2024-11-05T14:53
-updated: 2024-11-06T18:37
+updated: 2024-11-10T14:13
 id: 01JBYZ3NX4D6QSDE8RX2PZMAAB
 title: The Options Object Pattern
 description: The Options Object Pattern is a way to design highly composable function APIs that are open to extension.
 ---
+
 # The Options Object Pattern
 
 While there are multiple benefits to the **Options Object** pattern, there are some benefits that outweigh others. Composability and extensibility rank a lot higher than discoverability or readability. You're functions need to compose well, and have the ability to grow in a backward compatible way. Those two things keep the refactor goblins away.
@@ -21,54 +22,41 @@ It has a couple rules:
 It looks like this:
 
 ```ts
-function myFunction(foo: string, options?: { bar?: number}): void 
+function myFunction(foo: string, options?: { bar?: number }): void;
 ```
 
-Where  `foo` is a required string, `options` is an optional object with an optional `bar` property.
+Where `foo` is a required string, `options` is an optional object with an optional `bar` property.
 
 ## In the wild
 
-You might already have noticed this pattern in the wild and it's so fetch. No I'm not trying to make that happen, I'm literally talking about [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch), and  [`date-fns`](https://date-fns.org/v4.1.0/docs/formatDistance), and [`react`](https://react.dev/reference/react-dom/client/createRoot), and thousands of other function APIs in the browser, nodejs, and well known libraries.
+You might already have noticed this pattern in the wild and it's so fetch. No I'm not trying to make that happen, I'm literally talking about [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch), and [`date-fns`](https://date-fns.org/v4.1.0/docs/formatDistance), and [`react`](https://react.dev/reference/react-dom/client/createRoot), and thousands of other function APIs in the browser, nodejs, and well known libraries.
 
 But why do you see it in so many places?
 
-Because it's flexible enough to handle:
+It turns out, it solves a lot of problems that multiple arguments introduce.
 
-- Graceful Deprecation
-- Adding new options
-- Partial Application
-- Default Values
+## Holes, so many holes
 
-## Graceful Deprecation
+When you use multiple primitive arguments, everything is honkey dory until you have multiple optional arguments. Have you ever written `JSON.stringify(data, null, 2)`? Do you even know what the second argument is!? Turns out it's a [replacer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#replacer) array or function that allows you to manipulate the transformation of the data to a string. Pretty neat if you want allow-list some keys to keep from leaking sensitive data right? But lets be honest, you're using Zod to [parse not validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) your responses from your API endpoints already. But why do we have to pass `null` in as the second parameter? Because we only want to supply a value to the `space` argument, and don't need a `replacer`.
 
-```ts
-// Graceful Deprecation
+But you, as the almighty API decision maker have to make a choice when you use multiple optional arguments. You have to make the choice of what argument will be used the most. Had the original implementers decided that the `space` option had far more usage than the `replacer` function, you would be able to type `JSON.stringify(data, 2)`. How would we even make that decision? One (the `replacer`) cares about the data, while the other (`space`) cares about presentation. In this case, there are only 2, but what if the `fetch` API looked like this?
 
-// Let's say v1 looks like this.
-interface Options {
-  oldName?: string;
-}
-function fn1(foo: string, { oldName }: Options = {}) {
-  console.log(foo, oldName);
-}
-fn1("hello", { oldName: "world" });
-// hello world
-
-// And in v2 we use a better name.
-interface Options {
-  /**
-   * @deprecated since version 2.0, will be removed in version 3.0
-   */
-  oldName?: string;
-  newName?: string;
-}
-
-function fn2(foo: string, { oldName, newName = oldName }: Options = {}) {
-  console.log(foo, newName);
-}
-fn2("hello", { oldName: "world" });
-// hello world
-fn2("hello", { newName: "world" });
-// hello world
+```js
+function fetch(url, body, headers, method)
 ```
 
+Now, I have to supply something in the `body` parameter position whenever I want to set headers for a `GET` request
+
+```js
+fetch("http://example.com", undefined, { "x-custom-header": "foo" });
+```
+
+or `headers` when I need to set the `method` to anything other than the default `GET`.
+
+```js
+fetch("http://example.com", { foo: "bar" }, undefined, "POST");
+```
+
+Your invocations start looking Holy, no wait, I mean they have holes. Namely they have `undefined`, `null`, or some other token holes. Which is okay in small doses, but when there are functions with 15 optional arguments to pass in like fetch, that would quickly lead to hard to diagnose bugs. And what happens if you need to add another required parameter to the function signature?
+
+## Toss another param on the barbie

@@ -17,8 +17,18 @@ const blogs = Astro.props.blogs.filter((blog) => isPublishedBlog(blog, now));
       <li>
         <a href={`/blog/${blog.slug}/`}>
           <h3 class="mb-0">{blog.data.title}</h3>
-          <p class="mt-0">
-            <FormattedDate date={blog.data.published} />
+          <p class="flex justify-between mb-2">
+            <span>
+              {blog.data.updated ? (
+                <FormattedDate date={blog.data.updated} />
+              ) : (
+                <FormattedDate date={blog.data.published} />
+              )}
+            </span>
+
+            {blog
+              .render()
+              .then((result) => result.remarkPluginFrontmatter.readingTime)}
           </p>
         </a>
       </li>
