@@ -7,6 +7,7 @@ import Header from "../components/Header.astro";
 import Html from "../components/Html.astro";
 import Main from "../components/Main.astro";
 import type { PublishedBlog } from "../components/blog.lib";
+import { SITE_TITLE } from "../consts";
 
 type Props = Pick<
   PublishedBlog["data"],
@@ -20,7 +21,11 @@ const { title, description, published, hero, updated } = Astro.props;
 <!doctype html>
 <Html>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead
+      title={`${title} | ${SITE_TITLE}`}
+      description={description}
+      image={hero}
+    />
   </head>
 
   <Body>
