@@ -34,6 +34,9 @@ importers:
       '@astrojs/cloudflare':
         specifier: ^11.2.0
         version: 11.2.0(astro@4.16.9(@types/node@20.14.1)(rollup@4.24.4)(typescript@5.6.3))
+      '@astrojs/markdown-remark':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@astrojs/mdx':
         specifier: ^3.1.9
         version: 3.1.9(astro@4.16.9(@types/node@20.14.1)(rollup@4.24.4)(typescript@5.6.3))
@@ -52,6 +55,12 @@ importers:
       astro:
         specifier: ^4.16.8
         version: 4.16.9(@types/node@20.14.1)(rollup@4.24.4)(typescript@5.6.3)
+      mdast-util-to-string:
+        specifier: ^4.0.0
+        version: 4.0.0
+      reading-time:
+        specifier: ^1.5.0
+        version: 1.5.0
       tailwindcss:
         specifier: ^3.4.14
         version: 3.4.14
@@ -3953,6 +3962,9 @@ packages:
   readdirp@4.0.2:
     resolution: {integrity: sha512-yDMz9g+VaZkqBYS/ozoBJwaBhTbZo3UNYQHNRw1D3UFQB8oHB4uS/tAODO+ZLjGWmUbKnIlOWO+aaIiAxrUWHA==}
     engines: {node: '>= 14.16.0'}
+
+  reading-time@1.5.0:
+    resolution: {integrity: sha512-onYyVhBNr4CmAxFsKS7bz+uTLRakypIe4R+5A824vBSkQy/hB3fZepoVEf8OVAxzLvK+H/jm9TzpI3ETSm64Kg==}
 
   real-require@0.2.0:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
@@ -8949,7 +8961,7 @@ snapshots:
   micromark@4.0.0:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.7
       decode-named-character-reference: 1.0.2
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.1
@@ -9520,6 +9532,8 @@ snapshots:
       picomatch: 2.3.1
 
   readdirp@4.0.2: {}
+
+  reading-time@1.5.0: {}
 
   real-require@0.2.0: {}
 

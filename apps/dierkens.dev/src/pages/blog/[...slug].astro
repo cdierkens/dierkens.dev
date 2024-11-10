@@ -1,17 +1,18 @@
 ---
 import { getCollection } from "astro:content";
+import { isPublishedBlog } from "../../components/blog.lib";
 import BlogPost from "../../layouts/BlogPost.astro";
 
 const pages = await getCollection("blog");
 
 const { slug } = Astro.params;
 const page = pages.find((page) => page.slug === slug);
-if (!page) {
+if (!page || !isPublishedBlog(page, new Date())) {
   return Astro.redirect("/404");
 }
-const { Content } = await page.render();
+const { Content, remarkPluginFrontmatter } = await page.render();
 ---
 
-<BlogPost {...page.data}>
+<BlogPost readingTime={remarkPluginFrontmatter.readingTime} {...page.data}>
   <Content />
 </BlogPost>
