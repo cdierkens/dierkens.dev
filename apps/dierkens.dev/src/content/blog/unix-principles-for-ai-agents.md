@@ -59,7 +59,3 @@ The payoff of "one job, one artifact" shows up in three places:
 - **Measuring.** You can score each stage on its own artifact. If the behavior spec keeps missing acceptance criteria, you can see that in isolation instead of burying it in the final result.
 
 None of this is about operating systems. It's about what composable things look like, and AI skills turn out to have the same shape as good Unix tools: do one thing well, write text, and let the next thing read it.
-
----
-
-*This is a draft: the stage names, artifact names, and the "human approval only at the gates" detail are placeholders for your actual system. Tell me the real names and I'll slot them in.*
